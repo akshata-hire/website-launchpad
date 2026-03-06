@@ -49,8 +49,14 @@ export function SecondaryButton({
   )
 
   if (href) {
+    const isExternal = href.startsWith('http') && !href.includes('www.pingcap.com')
+
     return (
-      <a href={href} className={classes}>
+      <a
+        href={href}
+        className={classes}
+        {...(isExternal && { target: '_blank', rel: 'noopener noreferrer' })}
+      >
         {content}
       </a>
     )
