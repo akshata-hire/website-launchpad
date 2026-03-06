@@ -262,7 +262,12 @@ function HeroTextBlock({
         </p>
       )}
       {(primaryCta || secondaryCta) && (
-        <div className={cn('flex items-center gap-4 flex-wrap mt-8', centered && 'justify-center')}>
+        <div
+          className={cn(
+            'flex items-center gap-4 md:gap-8 flex-wrap mt-8',
+            centered && 'justify-center'
+          )}
+        >
           {primaryCta && <PrimaryButton href={primaryCta.href}>{primaryCta.text}</PrimaryButton>}
           {secondaryCta && (
             <SecondaryButton href={secondaryCta.href}>{secondaryCta.text}</SecondaryButton>
@@ -403,7 +408,7 @@ export function HeroSection({
 
         {/* Layout 3: image-right — left text (max 780px) + right heroImage */}
         {resolvedLayout === 'image-right' && (
-          <div className="flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-12">
+          <div className="flex flex-col lg:flex-row lg:items-center gap-8 md:gap-12">
             <HeroTextBlock
               eyebrow={eyebrow}
               headline={headline}
@@ -416,7 +421,7 @@ export function HeroSection({
               <div
                 className={cn(
                   'pt-4 lg:py-4 flex-1 flex items-center justify-center',
-                  heroImage.align === 'center' ? 'md:justify-center' : 'md:justify-end'
+                  heroImage.align === 'center' ? 'lg:justify-center' : 'lg:justify-end'
                 )}
               >
                 <Image
