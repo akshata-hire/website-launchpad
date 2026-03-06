@@ -20,9 +20,9 @@ const footerNav = [
   {
     title: 'Ecosystem',
     links: [
-      { label: 'Integrations', href: '/tidb/integrations/' },
-      { label: 'TiKV', href: '/tikv/' },
-      { label: 'TiSpark', href: '/tispark/' },
+      { label: 'Integrations', href: '/integrations' },
+      { label: 'TiKV', href: 'https://github.com/tikv/tikv' },
+      { label: 'TiSpark', href: 'https://github.com/pingcap/tispark' },
       { label: 'OSS Insight', href: 'https://ossinsight.io/' },
     ],
   },
@@ -34,7 +34,7 @@ const footerNav = [
       { label: 'Events & Webinars', href: '/events/' },
       { label: 'TiDB SCaiLE', href: '/tidb-scaile/' },
       { label: 'Docs', href: 'https://docs.pingcap.com/' },
-      { label: 'Developer Guide', href: '/developer/' },
+      { label: 'Developer Guide', href: '/developers/' },
       { label: 'FAQs', href: '/faqs/' },
       { label: 'Support', href: '/support/' },
     ],
@@ -42,8 +42,8 @@ const footerNav = [
   {
     title: 'Company',
     links: [
-      { label: 'About Us', href: '/about/' },
-      { label: 'News', href: '/news/' },
+      { label: 'About Us', href: '/about-us/' },
+      { label: 'News', href: '/press-releases-news/' },
       { label: 'Careers', href: '/careers/' },
       { label: 'Contact Us', href: '/contact-us/' },
       { label: 'Partners', href: '/partners/' },

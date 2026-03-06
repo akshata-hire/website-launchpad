@@ -3,6 +3,8 @@ import { cn } from '@/lib/utils'
 import { PrimaryButton } from '@/components/ui/PrimaryButton'
 import { SecondaryButton } from '@/components/ui/SecondaryButton'
 
+// ─── Seeded visual helpers ─────────────────────────────────────────────────────
+
 const HERO_RIGHT_IMAGES = [
   '/images/hero/r/Graphic-1-Dk.png',
   '/images/hero/r/Graphic-2-Dk.png',
@@ -30,33 +32,6 @@ const HERO_RIGHT_IMAGES = [
 
 const HERO_CENTERED_IMAGES = ['/images/hero/c/clip-group.svg']
 
-interface HeroBackgroundImage {
-  src?: string
-  alt?: string
-  priority?: boolean
-  /** Defaults to opacity-40 */
-  opacityClassName?: string
-  /** Optional overlay class. No overlay is applied unless this is provided. */
-  overlayClassName?: string
-  /** Defaults to object-center */
-  positionClassName?: string
-}
-
-interface HeroSectionProps {
-  eyebrow?: string
-  headline: string
-  subheadline?: string
-  primaryCta?: { text: string; href: string }
-  secondaryCta?: { text: string; href: string }
-  rightSlot?: React.ReactNode
-  centered?: boolean
-  backgroundImage?: HeroBackgroundImage
-  autoGenerateBackgroundImage?: boolean
-  className?: string
-}
-
-type HeroIllustrationVariant = 'cube-grid' | 'cube-frame' | 'cube-ui'
-
 function hashSeed(seed: string) {
   return Array.from(seed).reduce((acc, char) => (acc * 31 + char.charCodeAt(0)) % 1000003, 7)
 }
@@ -64,6 +39,8 @@ function hashSeed(seed: string) {
 function pickSeededImage(seed: string, pool: string[]) {
   return pool[hashSeed(seed) % pool.length]
 }
+
+type HeroIllustrationVariant = 'cube-grid' | 'cube-frame' | 'cube-ui'
 
 function pickHeroIllustrationVariant(seed: string): HeroIllustrationVariant {
   const normalized = seed.toLowerCase()
@@ -192,46 +169,160 @@ function AutoHeroBackground({ seed, className }: { seed: string; className?: str
   )
 }
 
+// ─── Types ─────────────────────────────────────────────────────────────────────
+
+/**
+ * Three layout modes:
+ * - `centered`    — text centered, optional background image
+ * - `split`       — 1:1 left text / right rightSlot (form, image, any ReactNode)
+ * - `image-right` — left text (max-w-[780px]) / right hero image with alignment control
+ */
+export type HeroLayout = 'centered' | 'split' | 'image-right'
+
+interface HeroBackgroundImage {
+  src?: string
+  alt?: string
+  priority?: boolean
+  /** Defaults to opacity-40 */
+  opacityClassName?: string
+  /** Optional overlay class. No overlay is applied unless this is provided. */
+  overlayClassName?: string
+  /** Defaults to object-center */
+  positionClassName?: string
+}
+
+/** Used with `layout="image-right"` */
+export interface HeroImageSlot {
+  src: string
+  alt?: string
+  width: number
+  height: number
+  /** Desktop image alignment. Defaults to `'right'`. */
+  align?: 'right' | 'center'
+  priority?: boolean
+}
+
+interface HeroSectionProps {
+  /**
+   * Layout variant.
+   * - `'split'` (default) — 1:1 grid, left text, right `rightSlot`
+   * - `'centered'`        — centered text with optional background image
+   * - `'image-right'`     — left text (max-w 780px) + right `heroImage`
+   */
+  layout?: HeroLayout
+  /** @deprecated Use `layout="centered"` instead. Kept for backward compatibility. */
+  centered?: boolean
+  eyebrow?: string
+  headline: string
+  subheadline?: string
+  primaryCta?: { text: string; href: string }
+  secondaryCta?: { text: string; href: string }
+  /** Right column content. Used in `split` layout. Falls back to seeded visual if omitted. */
+  rightSlot?: React.ReactNode
+  /** Hero image config. Used in `image-right` layout. */
+  heroImage?: HeroImageSlot
+  backgroundImage?: HeroBackgroundImage
+  autoGenerateBackgroundImage?: boolean
+  className?: string
+}
+
+// ─── Shared text block ─────────────────────────────────────────────────────────
+
+function HeroTextBlock({
+  eyebrow,
+  headline,
+  subheadline,
+  primaryCta,
+  secondaryCta,
+  centered,
+  className,
+}: Pick<
+  HeroSectionProps,
+  'eyebrow' | 'headline' | 'subheadline' | 'primaryCta' | 'secondaryCta'
+> & { centered?: boolean; className?: string }) {
+  return (
+    <div className={className}>
+      {eyebrow && <p className="font-mono text-eyebrow text-carbon-400 mb-8">{eyebrow}</p>}
+      <h1
+        className={cn(
+          'text-h1-mb md:text-h1 font-bold leading-tight max-w-hero-title mb-6 whitespace-pre-line',
+          centered && 'mx-auto'
+        )}
+      >
+        {headline}
+      </h1>
+      {subheadline && (
+        <p
+          className={cn(
+            'text-body-xl leading-relaxed',
+            centered ? 'text-text-secondary mx-auto mb-10' : 'text-text-secondary'
+          )}
+        >
+          {subheadline}
+        </p>
+      )}
+      {(primaryCta || secondaryCta) && (
+        <div className={cn('flex items-center gap-4 flex-wrap mt-8', centered && 'justify-center')}>
+          {primaryCta && <PrimaryButton href={primaryCta.href}>{primaryCta.text}</PrimaryButton>}
+          {secondaryCta && (
+            <SecondaryButton href={secondaryCta.href}>{secondaryCta.text}</SecondaryButton>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─── Component ─────────────────────────────────────────────────────────────────
+
 export function HeroSection({
+  layout,
+  centered = false,
   eyebrow,
   headline,
   subheadline,
   primaryCta,
   secondaryCta,
   rightSlot,
-  centered = false,
+  heroImage,
   backgroundImage,
   autoGenerateBackgroundImage = false,
   className,
 }: HeroSectionProps) {
+  // Resolve layout: explicit `layout` prop takes precedence; fall back to `centered` bool for compat
+  const resolvedLayout: HeroLayout = layout ?? (centered ? 'centered' : 'split')
+  const isCentered = resolvedLayout === 'centered'
+
   const heroSeed = `${headline} ${subheadline ?? ''}`.trim()
+
+  // Background image resolution (unchanged from original)
   const defaultCenteredBackgroundSrc =
-    centered && !backgroundImage?.src && !autoGenerateBackgroundImage
+    isCentered && !backgroundImage?.src && !autoGenerateBackgroundImage
       ? pickSeededImage(heroSeed, HERO_CENTERED_IMAGES)
       : undefined
   const resolvedBackgroundSrc =
     backgroundImage?.src ??
     defaultCenteredBackgroundSrc ??
     (autoGenerateBackgroundImage || backgroundImage ? 'AUTO_REFERENCE' : undefined)
-
   const heroBackgroundImage = resolvedBackgroundSrc
-    ? {
-        ...backgroundImage,
-        src: resolvedBackgroundSrc,
-      }
+    ? { ...backgroundImage, src: resolvedBackgroundSrc }
     : null
   const useCssBackgroundForCentered =
-    centered && !!heroBackgroundImage && heroBackgroundImage.src !== 'AUTO_REFERENCE'
-  const resolvedRightSlot = rightSlot ?? (!centered ? <SeededHeroVisual seed={heroSeed} /> : null)
+    isCentered && !!heroBackgroundImage && heroBackgroundImage.src !== 'AUTO_REFERENCE'
+
+  // Right slot for split layout
+  const resolvedRightSlot =
+    resolvedLayout === 'split' ? (rightSlot ?? <SeededHeroVisual seed={heroSeed} />) : null
 
   return (
     <section
       className={cn(
-        'bg-bg-primary pt-20 pb-20 text-text-inverse relative overflow-hidden',
-        centered && 'text-center',
+        'bg-bg-primary text-text-inverse relative overflow-hidden py-10 md:py-0',
+        isCentered && 'text-center',
         className
       )}
     >
+      {/* ── Background layer ── */}
       {heroBackgroundImage && (
         <>
           {heroBackgroundImage.src === 'AUTO_REFERENCE' ? (
@@ -274,59 +365,71 @@ export function HeroSection({
           )}
         </>
       )}
+
+      {/* ── Content ── */}
       <div
         className={cn(
           'max-w-container mx-auto px-4 md:px-8 lg:px-16',
           heroBackgroundImage && 'relative z-10'
         )}
       >
-        {!centered ? (
+        {/* Layout 1: centered */}
+        {resolvedLayout === 'centered' && (
+          <HeroTextBlock
+            eyebrow={eyebrow}
+            headline={headline}
+            subheadline={subheadline}
+            primaryCta={primaryCta}
+            secondaryCta={secondaryCta}
+            centered
+            className="pt-10 md:py-20"
+          />
+        )}
+
+        {/* Layout 2: split — 1:1 grid, right = rightSlot or seeded visual */}
+        {resolvedLayout === 'split' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div>
-              {eyebrow && <p className="font-mono text-eyebrow text-carbon-400 mb-8">{eyebrow}</p>}
-              <h1 className="text-h1-mb md:text-h1 font-bold leading-tight max-w-hero-title mb-6">
-                {headline}
-              </h1>
-              {subheadline && (
-                <p className="text-body-xl text-carbon-300 max-w-subtitle leading-relaxed mb-8">
-                  {subheadline}
-                </p>
-              )}
-              {(primaryCta || secondaryCta) && (
-                <div className="flex items-center gap-4 flex-wrap">
-                  {primaryCta && (
-                    <PrimaryButton href={primaryCta.href}>{primaryCta.text}</PrimaryButton>
-                  )}
-                  {secondaryCta && (
-                    <SecondaryButton href={secondaryCta.href}>{secondaryCta.text}</SecondaryButton>
-                  )}
-                </div>
-              )}
-            </div>
-            <div>{resolvedRightSlot}</div>
+            <HeroTextBlock
+              eyebrow={eyebrow}
+              headline={headline}
+              subheadline={subheadline}
+              primaryCta={primaryCta}
+              secondaryCta={secondaryCta}
+              className="pt-10 md:py-20"
+            />
+            <div className="py-4">{resolvedRightSlot}</div>
           </div>
-        ) : (
-          <>
-            {eyebrow && <p className="font-mono text-eyebrow text-carbon-400 mb-8">{eyebrow}</p>}
-            <h1 className="text-h1-mb md:text-h1 font-bold leading-tight max-w-hero-title mx-auto mb-6">
-              {headline}
-            </h1>
-            {subheadline && (
-              <p className="text-body-xl text-text-secondary max-w-subtitle mx-auto mb-10">
-                {subheadline}
-              </p>
-            )}
-            {(primaryCta || secondaryCta) && (
-              <div className="flex items-center justify-center gap-4 flex-wrap">
-                {primaryCta && (
-                  <PrimaryButton href={primaryCta.href}>{primaryCta.text}</PrimaryButton>
+        )}
+
+        {/* Layout 3: image-right — left text (max 780px) + right heroImage */}
+        {resolvedLayout === 'image-right' && (
+          <div className="flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-12">
+            <HeroTextBlock
+              eyebrow={eyebrow}
+              headline={headline}
+              subheadline={subheadline}
+              primaryCta={primaryCta}
+              secondaryCta={secondaryCta}
+              className="md:py-20 w-full lg:max-w-[780px] lg:shrink-0"
+            />
+            {heroImage && (
+              <div
+                className={cn(
+                  'pt-4 lg:py-4 flex-1 flex items-center justify-center',
+                  heroImage.align === 'center' ? 'md:justify-center' : 'md:justify-end'
                 )}
-                {secondaryCta && (
-                  <SecondaryButton href={secondaryCta.href}>{secondaryCta.text}</SecondaryButton>
-                )}
+              >
+                <Image
+                  src={heroImage.src}
+                  alt={heroImage.alt ?? ''}
+                  width={heroImage.width}
+                  height={heroImage.height}
+                  className="max-w-full h-auto"
+                  priority={heroImage.priority ?? true}
+                />
               </div>
             )}
-          </>
+          </div>
         )}
       </div>
     </section>

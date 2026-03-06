@@ -1,8 +1,7 @@
-import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
 interface FeatureCardProps {
-  icon?: React.ReactNode | string
+  icon?: React.ReactNode
   title: string
   description: string
   /** Border color Tailwind class, e.g. 'border-brand-red-primary'. Defaults to border-carbon-800 */
@@ -31,17 +30,11 @@ export function FeatureCard({
 
   const content = (
     <>
-      {icon && (
-        <div className="relative">
-          {typeof icon === 'string' ? (
-            <Image src={icon} alt="" fill className="object-contain" />
-          ) : (
-            icon
-          )}
-        </div>
-      )}
-      <h3 className="text-h3-lg font-bold leading-normal m-0 text-text-inverse">{title}</h3>
-      <p className="text-body-md leading-relaxed m-0 text-text-inverse">{description}</p>
+      {icon && <div>{icon}</div>}
+      <h3 className="text-h3-lg font-bold leading-normal m-0 text-text-inverse line-clamp-none md:line-clamp-2 flex-1">
+        {title}
+      </h3>
+      <p className="text-body-md leading-relaxed m-0 text-text-secondary">{description}</p>
     </>
   )
 

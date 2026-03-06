@@ -93,9 +93,9 @@ const dropdowns: NavDropdown[] = [
       {
         title: 'Ecosystem',
         items: [
-          { label: 'Integrations', href: '/tidb/integrations/', icon: GearIcon },
-          { label: 'TiKV', href: '/tikv/', icon: SlidersIcon },
-          { label: 'TiSpark', href: '/tispark/', icon: StarIcon },
+          { label: 'Integrations', href: '/integrations', icon: GearIcon },
+          { label: 'TiKV', href: 'https://github.com/tikv/tikv', icon: SlidersIcon },
+          { label: 'TiSpark', href: 'https://github.com/pingcap/tispark', icon: StarIcon },
           { label: 'OSS Insight', href: 'https://ossinsight.io/', icon: EyeIcon },
         ],
       },
@@ -120,18 +120,18 @@ const dropdowns: NavDropdown[] = [
           },
           {
             label: 'Modernize MySQL Workloads',
-            href: '/solutions/mysql-alternative/',
+            href: '/solutions/modernize-mysql-workloads/',
             icon: CloudTIcon,
           },
-          { label: 'Build GenAI Applications', href: '/solutions/genai/', icon: AiTIcon },
+          { label: 'Build GenAI Applications', href: '/ai/', icon: AiTIcon },
         ],
       },
       {
         title: 'By Industry',
         items: [
-          { label: 'AI', href: '/solutions/ai/', icon: AiTIcon },
+          { label: 'AI', href: '/ai/', icon: AiTIcon },
           { label: 'Fintech', href: '/solutions/fintech/', icon: WalletTIcon },
-          { label: 'eCommerce', href: '/solutions/ecommerce/', icon: BagT1Icon },
+          { label: 'eCommerce', href: '/solutions/e-commerce/', icon: BagT1Icon },
           { label: 'SaaS', href: '/solutions/saas/', icon: DesktopTIcon },
         ],
       },
@@ -150,26 +150,34 @@ const dropdowns: NavDropdown[] = [
         title: 'Learn',
         items: [
           { label: 'Blog', href: '/blog/', icon: FileTIcon },
-          { label: 'eBooks & Whitepapers', href: '/resources/ebooks/', icon: BookTIcon },
-          { label: 'Videos & Replays', href: '/resources/videos/', icon: VideoIcon },
-          { label: 'Horizontal Scaling', href: '/resources/horizontal-scaling/', icon: ScaleTIcon },
+          { label: 'eBooks & Whitepapers', href: '/ebook-whitepaper/', icon: BookTIcon },
+          { label: 'Videos & Replays', href: '/videos/', icon: VideoIcon },
+          {
+            label: 'Horizontal Scaling',
+            href: '/horizontal-scaling-vs-vertical-scaling/',
+            icon: ScaleTIcon,
+          },
         ],
       },
       {
         title: 'Engage',
         items: [
-          { label: 'Events & Webinars', href: '/events/', icon: CalendarTIcon },
-          { label: 'Discord Community', href: 'https://discord.gg/pingcap', icon: CommentsTIcon },
-          { label: 'Developer Hub', href: '/developer/', icon: CodeTIcon },
-          { label: 'TiDB SCaiLE', href: '/tidb-scaile/', icon: BookmarkTIcon },
+          { label: 'Events & Webinars', href: '/event/', icon: CalendarTIcon },
+          {
+            label: 'Discord Community',
+            href: 'https://discord.com/invite/vYU9h56kAX',
+            icon: CommentsTIcon,
+          },
+          { label: 'Developer Hub', href: '/developers/', icon: CodeTIcon },
+          { label: 'TiDB SCaiLE', href: '/tidb-scaile-summit/', icon: BookmarkTIcon },
         ],
       },
       {
         title: 'PingCAP University',
         items: [
-          { label: 'Courses', href: '/university/courses/', icon: EducationIcon },
-          { label: 'Hands-on Labs', href: '/university/labs/', icon: AppWindowIcon },
-          { label: 'Certifications', href: '/university/certifications/', icon: AwardIcon },
+          { label: 'Courses', href: '/education/', icon: EducationIcon },
+          { label: 'Hands-on Labs', href: '/education/tidb-hands-on-labs/', icon: AppWindowIcon },
+          { label: 'Certifications', href: '/education/certification/', icon: AwardIcon },
         ],
       },
     ],
@@ -180,8 +188,8 @@ const dropdowns: NavDropdown[] = [
       {
         title: 'About',
         items: [
-          { label: 'Press Releases & News', href: '/news/', icon: NewspaperIcon },
-          { label: 'About Us', href: '/about/', icon: BuildingsIcon },
+          { label: 'Press Releases & News', href: '/press-releases-news/', icon: NewspaperIcon },
+          { label: 'About Us', href: '/about-us/', icon: BuildingsIcon },
           { label: 'Careers', href: '/careers/', icon: BriefcaseIcon },
           { label: 'Partners', href: '/partners/', icon: HandshakeIcon },
           { label: 'Contact Us', href: '/contact-us/', icon: AtIcon },

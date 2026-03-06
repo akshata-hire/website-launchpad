@@ -109,20 +109,20 @@ Generate the full file at `src/app/[path]/page.tsx`, then run the post-generatio
 
 ## 🧩 Component Quick Reference
 
-| Component           | Import from                          | Key Props                                                                        |
-| ------------------- | ------------------------------------ | -------------------------------------------------------------------------------- |
-| `<HeroSection>`     | `@/components/sections/HeroSection`  | `eyebrow` `headline` `subheadline` `primaryCta` `secondaryCta` `rightSlot`       |
-| `<FeaturesGrid>`    | `@/components/sections/FeaturesGrid` | `label` `title` `features` `columns={2\|3\|4}` `viewMore`                        |
-| `<CtaSection>`      | `@/components/sections/CtaSection`   | `variant` `title` `cta`                                                          |
-| `<FeatureCard>`     | `@/components/ui/FeatureCard`        | `icon?` `title` `description` `href?` `borderColor?`                             |
-| `<ColorCard>`       | `@/components/ui/ColorCard`          | `variant="red\|violet\|blue\|teal"` `title` `description` `cta` `icon?` `image?` |
-| `<SectionHeader>`   | `@/components/ui/SectionHeader`      | `label?` `title` `subtitle?` `h2Size="lg\|md\|sm"` `align="center\|left"`        |
-| `<Tabs>`            | `@/components/ui/Tabs`               | `tabs` `autoSwitch?` `autoSwitchInterval?` `defaultActiveTab?`                   |
-| `<CountUp>`         | `@/components/ui/CountUp`            | `value="$2,000+"` `className?` — triggers on scroll                              |
-| `<PrimaryButton>`   | `@/components/ui/PrimaryButton`      | `href?` `onClick?`                                                               |
-| `<SecondaryButton>` | `@/components/ui/SecondaryButton`    | `href?` `dark={true}` `onClick?`                                                 |
-| `<Navbar>`          | `@/components/ui/Header`             | no props — always include                                                        |
-| `<Footer>`          | `@/components/ui/Footer`             | no props — always include                                                        |
+| Component           | Import from                          | Key Props                                                                                                                                     |
+| ------------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `<HeroSection>`     | `@/components/sections/HeroSection`  | `layout="split\|centered\|image-right"` `eyebrow` `headline`(supports `\n`) `subheadline` `primaryCta` `secondaryCta` `rightSlot` `heroImage` |
+| `<FeaturesGrid>`    | `@/components/sections/FeaturesGrid` | `label` `title` `features` `columns={2\|3\|4}` `viewMore`                                                                                     |
+| `<CtaSection>`      | `@/components/sections/CtaSection`   | `variant` `title` `cta`                                                                                                                       |
+| `<FeatureCard>`     | `@/components/ui/FeatureCard`        | `icon?` `title` `description` `href?` `borderColor?`                                                                                          |
+| `<ColorCard>`       | `@/components/ui/ColorCard`          | `variant="red\|violet\|blue\|teal"` `title` `description` `cta` `icon?` `image?`                                                              |
+| `<SectionHeader>`   | `@/components/ui/SectionHeader`      | `label?` `title` `subtitle?` `h2Size="lg\|md\|sm"` `align="center\|left"`                                                                     |
+| `<Tabs>`            | `@/components/ui/Tabs`               | `tabs` `autoSwitch?` `autoSwitchInterval?` `defaultActiveTab?`                                                                                |
+| `<CountUp>`         | `@/components/ui/CountUp`            | `value="$2,000+"` `className?` — triggers on scroll                                                                                           |
+| `<PrimaryButton>`   | `@/components/ui/PrimaryButton`      | `href?` `onClick?`                                                                                                                            |
+| `<SecondaryButton>` | `@/components/ui/SecondaryButton`    | `href?` `dark={true}` `onClick?`                                                                                                              |
+| `<Navbar>`          | `@/components/ui/Header`             | no props — always include                                                                                                                     |
+| `<Footer>`          | `@/components/ui/Footer`             | no props — always include                                                                                                                     |
 
 Full specs: `.ai/skills/design-system/components.md`
 
