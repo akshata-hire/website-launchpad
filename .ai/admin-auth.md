@@ -89,3 +89,15 @@ logs by the `[audit]` prefix, e.g.:
 ```
 
 The actor is only meaningful where login is enforced (the staging deployment).
+
+## Admin UI: user menu + page authorship
+
+- **User menu** — the admin shell top bar shows the signed-in Google name/email
+  with a **Sign out** button (`src/components/admin/UserMenu.tsx`, server-action
+  `signOut`). Hidden when there is no session (local dev).
+- **Page authorship** — `meta.createdBy` / `createdAt` / `modifiedBy` / `modifiedAt`
+  are stamped server-side on every write (`stampAuthorship`, `src/lib/authorship.ts`)
+  from publish, draft-save, and copy. The creator is set once and preserved; copy
+  stamps the current user. The pages list shows "Created by X · Modified by Y".
+  Only pages written after this ships carry authorship; older pages show nothing
+  until next saved.
