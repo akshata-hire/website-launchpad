@@ -38,8 +38,9 @@ export default auth((req) => {
   }
 
   // The custom sign-in page itself must be reachable without a session, otherwise
-  // redirecting unauthenticated users to it would loop.
-  if (pathname === '/admin/login') {
+  // redirecting unauthenticated users to it would loop. Match the trailing-slash
+  // form too — `trailingSlash` is enabled, so requests normalize to /admin/login/.
+  if (pathname === '/admin/login' || pathname === '/admin/login/') {
     return NextResponse.next()
   }
 
@@ -48,12 +49,13 @@ export default auth((req) => {
     return NextResponse.next()
   }
 
-  // Unauthenticated: APIs get a 401; browser navigation is sent to Google sign-in.
+  // Unauthenticated: APIs get a 401; browser navigation goes straight to the
+  // branded sign-in page (not /api/auth/signin — that adds an extra redirect hop).
   if (pathname.startsWith('/api')) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const signInUrl = new URL('/api/auth/signin', req.nextUrl.origin)
+  const signInUrl = new URL('/admin/login', req.nextUrl.origin)
   signInUrl.searchParams.set('callbackUrl', req.nextUrl.href)
   return NextResponse.redirect(signInUrl)
 })
