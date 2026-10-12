@@ -101,3 +101,34 @@ The actor is only meaningful where login is enforced (the staging deployment).
   stamps the current user. The pages list shows "Created by X · Modified by Y".
   Only pages written after this ships carry authorship; older pages show nothing
   until next saved.
+
+## GitHub API identity (least-privilege token)
+
+The server resolves its GitHub token through `getGitHubToken()`
+(`src/lib/github-auth.ts`), used by every route that calls the GitHub API.
+
+- **Preferred — GitHub App.** Set `GITHUB_APP_ID`, `GITHUB_APP_PRIVATE_KEY` (PEM),
+  and optionally `GITHUB_APP_INSTALLATION_ID` (auto-resolved from the repo if
+  omitted). The server signs a short-lived JWT with the private key and mints a
+  **1-hour installation token** (cached until ~5 min before expiry). The App is
+  installed on only this repo with only the permissions it needs (Contents: R/W),
+  and commits are attributed to the App — not a person.
+- **Fallback — `GITHUB_TOKEN` PAT.** If the App vars are absent, the static PAT is
+  used, so nothing breaks before the App exists and local dev keeps working.
+  Remove `GITHUB_TOKEN` from Preview once the App is confirmed working.
+
+### GitHub App setup (one time)
+
+1. Org → Settings → Developer settings → **GitHub Apps → New GitHub App**.
+   - Repository permissions: **Contents: Read & write** (+ Metadata: read, implied).
+   - Where can this app be installed: **Only on this account**.
+2. Generate a **private key** (downloads a `.pem`).
+3. **Install** the App on `pingcap-inc/website-launchpad` only.
+4. On Vercel (Preview scope) set `GITHUB_APP_ID` and `GITHUB_APP_PRIVATE_KEY`
+   (paste the PEM; `\n`-escaped is fine). Redeploy, confirm admin writes work,
+   then delete the old `GITHUB_TOKEN`.
+
+This closes the "admin pushes with a personal account's broad PAT" risk: the
+blast radius shrinks to one repo's contents, tokens are short-lived, and commits
+are no longer attributed to an individual (the audit log still records the real
+person behind each action).

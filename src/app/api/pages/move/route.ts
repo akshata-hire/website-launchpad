@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { logAudit } from '@/lib/audit'
+import { getGitHubAuthHeaders } from '@/lib/github-auth'
 
 const DRAFT_BRANCH = 'drafts/ai'
 
@@ -8,16 +9,6 @@ function isValidSlugPath(slug: string) {
   const segments = slug.split('/').filter(Boolean)
   if (segments.length === 0) return false
   return segments.every((segment) => /^[a-z0-9-]+$/.test(segment))
-}
-
-function getGitHubHeaders() {
-  const { GITHUB_TOKEN } = process.env
-  return {
-    Authorization: `Bearer ${GITHUB_TOKEN}`,
-    Accept: 'application/vnd.github+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-    'Content-Type': 'application/json',
-  }
 }
 
 async function readFile(
@@ -82,10 +73,11 @@ async function deleteFile(
 }
 
 export async function POST(req: NextRequest) {
-  const { GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO } = process.env
+  const { GITHUB_OWNER, GITHUB_REPO } = process.env
   const publishedBranch = process.env.GITHUB_BRANCH ?? 'staging'
 
-  if (!GITHUB_TOKEN || !GITHUB_OWNER || !GITHUB_REPO) {
+  const headers = await getGitHubAuthHeaders()
+  if (!headers || !GITHUB_OWNER || !GITHUB_REPO) {
     return NextResponse.json({ error: 'GitHub env vars not configured' }, { status: 500 })
   }
 
@@ -108,7 +100,6 @@ export async function POST(req: NextRequest) {
   const includeDraft = body.includeDraft !== false
   const includePublished = body.includePublished !== false
 
-  const headers = getGitHubHeaders()
   const baseUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}`
 
   const operations: Array<{ branch: string; path: string; fromPath: string }> = []
