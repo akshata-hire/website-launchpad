@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import prettier from 'prettier'
 import { dslToTsx } from '@/lib/dsl-to-tsx'
 import { SITE_BASE_URL } from '@/lib/env'
+import { logAudit } from '@/lib/audit'
 import type { PageDSL } from '@/lib/dsl-schema'
 
 interface PublishRequest {
@@ -87,6 +88,13 @@ export async function POST(request: NextRequest) {
   if (branch === 'main') {
     const providedToken = request.headers.get('x-publish-main-token')
     if (!mainPublishToken || !providedToken || providedToken !== mainPublishToken) {
+      await logAudit(request, {
+        action: 'publish',
+        target: slug,
+        branch,
+        status: 'denied',
+        detail: 'missing or invalid x-publish-main-token',
+      })
       return NextResponse.json(
         {
           error: 'Publishing to main is restricted. Provide a valid x-publish-main-token header.',
@@ -249,6 +257,14 @@ export async function POST(request: NextRequest) {
     branch === 'main'
       ? `https://www.pingcap.com/${slug}/`
       : `${SITE_BASE_URL.replace(/\/$/, '') || `https://${GITHUB_REPO}-git-${branch.replace(/[^a-z0-9]/g, '-')}-${VERCEL_OWNER}.vercel.app`}/${slug}/`
+
+  await logAudit(request, {
+    action: 'publish',
+    target: slug,
+    branch,
+    status: 'success',
+    detail: hasSitemap ? 'page + sitemap' : 'page',
+  })
 
   return NextResponse.json({
     success: true,

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { logAudit } from '@/lib/audit'
 import type { PageDSL } from '@/lib/dsl-schema'
 
 const SKIP_SLUGS = new Set(['api', 'admin', 'sections'])
@@ -121,6 +122,13 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
     const err = (await res.json()) as { message?: string }
     return NextResponse.json({ error: err.message ?? 'Failed to save DSL' }, { status: 500 })
   }
+
+  await logAudit(req, {
+    action: 'draft-save',
+    target: slug,
+    branch: writeBranch,
+    status: 'success',
+  })
 
   return NextResponse.json({ success: true })
 }

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { logAudit } from '@/lib/audit'
 
 const DRAFT_BRANCH = 'drafts/ai'
 
@@ -151,6 +152,13 @@ export async function POST(req: NextRequest) {
   if (deleted === 0) {
     return NextResponse.json({ error: 'No matching files to delete' }, { status: 404 })
   }
+
+  await logAudit(req, {
+    action: 'delete',
+    target: slug,
+    status: 'success',
+    detail: `${deleted} file(s)`,
+  })
 
   return NextResponse.json({ success: true, deleted })
 }

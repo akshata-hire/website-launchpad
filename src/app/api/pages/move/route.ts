@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { logAudit } from '@/lib/audit'
 
 const DRAFT_BRANCH = 'drafts/ai'
 
@@ -148,6 +149,14 @@ export async function POST(req: NextRequest) {
   if (moved.length === 0) {
     return NextResponse.json({ error: 'No matching files to move' }, { status: 404 })
   }
+
+  await logAudit(req, {
+    action: 'move',
+    target: from,
+    targetTo: to,
+    status: 'success',
+    detail: `${moved.length} file(s)`,
+  })
 
   return NextResponse.json({ success: true, moved })
 }
