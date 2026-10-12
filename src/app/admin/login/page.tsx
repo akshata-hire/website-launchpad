@@ -41,7 +41,7 @@ export default async function AdminLoginPage({
       <div className="w-full max-w-sm rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
         <div className="mb-8 text-center">
           <p className="font-mono text-sm font-bold tracking-wide text-gray-900">TiDB</p>
-          <h1 className="mt-5 text-xl font-bold text-gray-900">Admin Sign In</h1>
+          <h1 className="mt-5 text-xl font-bold text-gray-900">AI Website Platform Admin</h1>
           <p className="mt-2 text-sm leading-relaxed text-gray-500">
             Use your <span className="font-medium text-gray-700">@pingcap.com</span> Google account
             to continue.
