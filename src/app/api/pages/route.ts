@@ -8,6 +8,10 @@ export interface PageListItem {
   hasPublished: boolean
   hasDraft: boolean
   isCode: boolean
+  createdBy: string | null
+  createdAt: string | null
+  modifiedBy: string | null
+  modifiedAt: string | null
 }
 
 const SKIP_DIRS = new Set(['api', 'admin', 'sections'])
@@ -58,21 +62,42 @@ async function fetchTree(
   return (await res.json()) as { tree: { path: string; type: string }[] }
 }
 
-async function fetchDslTitle(
+interface DslSummary {
+  title: string
+  createdBy: string | null
+  createdAt: string | null
+  modifiedBy: string | null
+  modifiedAt: string | null
+}
+
+async function fetchDslSummary(
   baseUrl: string,
   headers: Record<string, string>,
   path: string,
   branch: string,
   slug: string
-) {
+): Promise<DslSummary> {
+  const empty: DslSummary = {
+    title: slug,
+    createdBy: null,
+    createdAt: null,
+    modifiedBy: null,
+    modifiedAt: null,
+  }
   const res = await fetch(`${baseUrl}/contents/${path}?ref=${branch}`, { headers })
-  if (!res.ok) return slug
+  if (!res.ok) return empty
   const data = (await res.json()) as { content: string }
   try {
     const dsl = JSON.parse(Buffer.from(data.content, 'base64').toString('utf-8'))
-    return dsl?.pageName ?? dsl?.meta?.title ?? slug
+    return {
+      title: dsl?.pageName ?? dsl?.meta?.title ?? slug,
+      createdBy: dsl?.meta?.createdBy ?? null,
+      createdAt: dsl?.meta?.createdAt ?? null,
+      modifiedBy: dsl?.meta?.modifiedBy ?? null,
+      modifiedAt: dsl?.meta?.modifiedAt ?? null,
+    }
   } catch {
-    return slug
+    return empty
   }
 }
 
@@ -221,11 +246,11 @@ export async function GET(req: Request) {
 
         const titleSourcePath = publishedPath ?? draftPath
         const titleSourceBranch = publishedPath ? branch : draftPath ? DRAFT_BRANCH : branch
-        const title = includeTitle
-          ? titleSourcePath
-            ? await fetchDslTitle(baseUrl, headers, titleSourcePath, titleSourceBranch, slug)
-            : toTitleCase(slug)
-          : toTitleCase(slug)
+        const summary =
+          includeTitle && titleSourcePath
+            ? await fetchDslSummary(baseUrl, headers, titleSourcePath, titleSourceBranch, slug)
+            : null
+        const title = summary?.title ?? toTitleCase(slug)
 
         const updatedPath = draftPath ?? publishedPath ?? codePath
         const updatedBranch = draftPath ? DRAFT_BRANCH : branch
@@ -242,6 +267,10 @@ export async function GET(req: Request) {
           hasPublished: hasPublishedDsl,
           hasDraft: hasDraftDsl,
           isCode,
+          createdBy: summary?.createdBy ?? null,
+          createdAt: summary?.createdAt ?? null,
+          modifiedBy: summary?.modifiedBy ?? null,
+          modifiedAt: summary?.modifiedAt ?? null,
         } as PageListItem
       })
     )

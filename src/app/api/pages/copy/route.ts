@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { logAudit } from '@/lib/audit'
+import { logAudit, resolveActor } from '@/lib/audit'
 
 const DRAFT_BRANCH = 'drafts/ai'
 
@@ -77,9 +77,10 @@ async function writeFile(
   }
 }
 
-// Rewrite the duplicated DSL's identity so it stands on its own:
-// point the SEO canonical at the new slug instead of the source's.
-function reslugDsl(raw: string, toSlug: string): string {
+// Rewrite the duplicated DSL's identity so it stands on its own: point the SEO
+// canonical at the new slug, and stamp the current user as the creator — the copy
+// is a brand-new page, not a continuation of the source's authorship.
+function reslugDsl(raw: string, toSlug: string, actor: string): string {
   let dsl: unknown
   try {
     dsl = JSON.parse(raw)
@@ -88,9 +89,22 @@ function reslugDsl(raw: string, toSlug: string): string {
     return raw
   }
   if (dsl && typeof dsl === 'object') {
-    const obj = dsl as { meta?: { canonical?: string } }
+    const obj = dsl as {
+      meta?: {
+        canonical?: string
+        createdBy?: string
+        createdAt?: string
+        modifiedBy?: string
+        modifiedAt?: string
+      }
+    }
     if (obj.meta && typeof obj.meta === 'object') {
       obj.meta.canonical = `/${toSlug}/`
+      const now = new Date().toISOString()
+      obj.meta.createdBy = actor
+      obj.meta.createdAt = now
+      obj.meta.modifiedBy = actor
+      obj.meta.modifiedAt = now
     }
   }
   return `${JSON.stringify(dsl, null, 2)}\n`
@@ -151,7 +165,8 @@ export async function POST(req: NextRequest) {
 
     // The duplicate always lands as a fresh draft — it goes through the
     // normal review → publish flow rather than going live immediately.
-    const content = reslugDsl(source.content, to)
+    const actor = await resolveActor()
+    const content = reslugDsl(source.content, to, actor)
     await writeFile(
       baseUrl,
       headers,

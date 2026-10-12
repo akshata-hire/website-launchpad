@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import prettier from 'prettier'
 import { dslToTsx } from '@/lib/dsl-to-tsx'
 import { SITE_BASE_URL } from '@/lib/env'
-import { logAudit } from '@/lib/audit'
+import { logAudit, resolveActor } from '@/lib/audit'
+import { stampAuthorship } from '@/lib/authorship'
 import type { PageDSL } from '@/lib/dsl-schema'
 
 interface PublishRequest {
@@ -113,6 +114,11 @@ export async function POST(request: NextRequest) {
   if (!dsl?.meta || !dsl?.sections) {
     return NextResponse.json({ error: 'Invalid DSL structure' }, { status: 400 })
   }
+
+  // Record authorship (who/when) into the DSL meta before it is committed. The
+  // creator is preserved if already set; the modifier is always the current user.
+  const actor = await resolveActor()
+  stampAuthorship(dsl, actor)
 
   const headers = {
     Authorization: `Bearer ${GITHUB_TOKEN}`,
