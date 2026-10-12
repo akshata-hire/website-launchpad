@@ -1,0 +1,62 @@
+# Admin Authentication (Google login, @pingcap.com only)
+
+The admin CMS (`/admin/*`) and its API routes (`/api/*`) are gated by Google
+sign-in, restricted to the `pingcap.com` email domain. Implemented with
+[Auth.js v5](https://authjs.dev) (`next-auth@5`).
+
+## Gate behaviour (see `src/middleware.ts`)
+
+| Environment        | `VERCEL_ENV` | Behaviour                                             |
+| ------------------ | ------------ | ----------------------------------------------------- |
+| Production         | `production` | `/admin` + `/api` return **404** (unchanged)          |
+| Preview / staging  | `preview`    | **Require** a signed-in `@pingcap.com` Google user    |
+| Local (`pnpm dev`) | _unset_      | **No** login gate — localhost is not internet-exposed |
+
+Domain enforcement is in the `signIn` callback in `src/auth.ts`: a login is
+accepted only when Google reports `email_verified` **and** the email ends in
+`@pingcap.com`. The Google `hd` param is only a UI hint and is not trusted.
+
+Unauthenticated requests on preview: browser navigations are redirected to
+`/api/auth/signin`; API calls get `401`.
+
+## Required environment variables
+
+Set these on Vercel for the **Preview** environment (and in `.env.local` only if
+you want to exercise the real login flow locally):
+
+| Variable             | What it is                                                   |
+| -------------------- | ------------------------------------------------------------ |
+| `AUTH_SECRET`        | Session/JWT signing secret. Generate with `npx auth secret`. |
+| `AUTH_GOOGLE_ID`     | Google OAuth 2.0 **Client ID**.                              |
+| `AUTH_GOOGLE_SECRET` | Google OAuth 2.0 **Client secret**.                          |
+
+> `AUTH_SECRET` **must** be set on every deployed (preview) environment. Without
+> it the gate cannot verify sessions. Local dev falls back to an insecure dev
+> secret purely so `pnpm dev` doesn't crash — it never protects anything, because
+> localhost bypasses the gate.
+
+## Google Cloud Console setup (one time)
+
+1. **APIs & Services → Credentials → Create credentials → OAuth client ID**,
+   type **Web application**.
+2. **Authorized redirect URIs** — add the callback for each host that serves the
+   admin:
+   - `https://<your-preview-host>/api/auth/callback/google`
+   - (optional, for local login) `http://localhost:3000/api/auth/callback/google`
+
+   Preview hostnames rotate per deploy. Prefer a **stable** preview alias (e.g.
+   the staging branch alias `website-launchpad-git-staging-pingcap.vercel.app`)
+   and register its callback once. `trustHost: true` is already set so Auth.js
+   accepts the preview host.
+
+3. Copy the Client ID / secret into `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET`.
+4. (Recommended) On the OAuth consent screen, set **User type = Internal** so
+   only the PingCAP Google Workspace org can even attempt sign-in — defense in
+   depth on top of the `signIn` domain check.
+
+## Rollout note
+
+Merging this does not lock anyone out of production (admin is already 404 there).
+It **does** gate preview/staging: once deployed, `AUTH_SECRET` + the Google
+credentials must be present in the Preview environment or the admin will reject
+sign-in. Configure them before/with the merge.
