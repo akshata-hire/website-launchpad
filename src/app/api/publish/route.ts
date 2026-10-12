@@ -31,6 +31,18 @@ function isValidSlugPath(slug: string) {
   return segments.length > 0 && segments.every((segment) => /^[a-z0-9-]+$/.test(segment))
 }
 
+// `branch` is interpolated into GitHub ref paths (git/refs/heads/<branch>), so an
+// unvalidated value like `foo/../main` would normalize to `heads/main` when fetch
+// parses the URL — writing to main while `branch === 'main'` is false, bypassing
+// the PUBLISH_MAIN_TOKEN gate. Allow only plain git ref names: no percent-encoding,
+// no empty/`.`/`..` path segments, no leading/trailing slash.
+function isValidBranchName(branch: string) {
+  if (!branch || branch.length > 255) return false
+  if (branch.startsWith('/') || branch.endsWith('/')) return false
+  if (!/^[A-Za-z0-9._/-]+$/.test(branch)) return false
+  return branch.split('/').every((seg) => seg !== '' && seg !== '.' && seg !== '..')
+}
+
 export async function POST(request: NextRequest) {
   const { GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, VERCEL_OWNER } = process.env
   const mainPublishToken = process.env.PUBLISH_MAIN_TOKEN
@@ -59,6 +71,13 @@ export async function POST(request: NextRequest) {
     priority = 0.7,
     changeFrequency = 'monthly',
   } = (await request.json()) as PublishRequest
+
+  // Reject malformed branch names before any gate decision, so a value that
+  // normalizes to a different ref (e.g. `foo/../main`) can't slip past the
+  // `branch === 'main'` token check below and still write to main.
+  if (!isValidBranchName(branch)) {
+    return NextResponse.json({ error: 'Invalid branch name.' }, { status: 400 })
+  }
 
   // Auto-add to sitemap when publishing to main; skip for feature/staging branches.
   // Unlisted / noindex pages are kept out of the sitemap — they stay live at their

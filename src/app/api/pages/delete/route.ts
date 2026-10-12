@@ -84,10 +84,51 @@ export async function POST(req: NextRequest) {
   const targets: Array<{ branch: string; path: string }> = []
 
   if (includePublished) {
-    targets.push(
-      { branch: publishedBranch, path: `src/app/${slug}/page.tsx` },
-      { branch: publishedBranch, path: `src/app/${slug}/page.dsl.json` }
-    )
+    // Only delete the published page.tsx when a sibling page.dsl.json exists:
+    // its presence marks this as a CMS-managed page. A page.tsx with no DSL is
+    // hand-authored (code-owned); deleting it through the CMS API would silently
+    // destroy a developer's file, so refuse it here.
+    let publishedDslSha: string | null
+    try {
+      publishedDslSha = await readSha(
+        baseUrl,
+        headers,
+        `src/app/${slug}/page.dsl.json`,
+        publishedBranch
+      )
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Unknown error during deletion'
+      return NextResponse.json({ error: msg }, { status: 500 })
+    }
+
+    if (publishedDslSha) {
+      targets.push(
+        { branch: publishedBranch, path: `src/app/${slug}/page.tsx` },
+        { branch: publishedBranch, path: `src/app/${slug}/page.dsl.json` }
+      )
+    } else {
+      let publishedTsxSha: string | null
+      try {
+        publishedTsxSha = await readSha(
+          baseUrl,
+          headers,
+          `src/app/${slug}/page.tsx`,
+          publishedBranch
+        )
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : 'Unknown error during deletion'
+        return NextResponse.json({ error: msg }, { status: 500 })
+      }
+      if (publishedTsxSha) {
+        return NextResponse.json(
+          {
+            error:
+              'Refusing to delete a code-owned page (page.tsx with no page.dsl.json). Delete it in the repository instead.',
+          },
+          { status: 409 }
+        )
+      }
+    }
   }
 
   if (includeDraft) {

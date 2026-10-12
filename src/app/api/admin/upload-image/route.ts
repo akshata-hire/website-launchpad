@@ -5,6 +5,16 @@ import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3
 const CDN_BASE = 'https://static.pingcap.com'
 const TAGS_KEY = 'media/tags.json'
 
+// `slug` is interpolated into the committed file path
+// (public/images/admin-uploads/<slug>/<file>). Without validation, a value like
+// `../../../src/app/some-page` escapes the uploads dir and writes arbitrary repo
+// files via the GitHub token. Allow only plain slug segments — no dots, no traversal.
+function isValidSlugPath(slug: string) {
+  if (!slug) return false
+  const segments = slug.split('/').filter(Boolean)
+  return segments.length > 0 && segments.every((segment) => /^[a-z0-9-]+$/.test(segment))
+}
+
 /**
  * POST /api/admin/upload-image
  * Uploads an image file to public/images/admin-uploads/{slug}/ via GitHub Contents API.
@@ -23,6 +33,9 @@ export async function POST(req: NextRequest) {
 
   const file = formData.get('file') as File | null
   const slug = (formData.get('slug') as string | null) ?? 'admin'
+  if (!isValidSlugPath(slug)) {
+    return NextResponse.json({ error: 'Invalid slug' }, { status: 400 })
+  }
   const source = (formData.get('source') as string | null) ?? ''
   const tagsRaw = (formData.get('tags') as string | null) ?? ''
   const skipTagsUpdate = (formData.get('skipTagsUpdate') as string | null) === '1'
