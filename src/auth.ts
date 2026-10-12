@@ -18,6 +18,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   // Preview deployments get rotating *.vercel.app hostnames; trustHost lets
   // Auth.js accept them without a per-deploy AUTH_URL.
   trustHost: true,
+  // Use our own branded sign-in page instead of the bare Auth.js default.
+  // The middleware must leave /admin/login reachable without a session.
+  pages: { signIn: '/admin/login' },
   // A real secret MUST be set (AUTH_SECRET) on every deployed environment. The
   // dev fallback exists only so local `pnpm dev` doesn't crash — local requests
   // are never gated on it (see middleware: localhost bypasses the login gate).

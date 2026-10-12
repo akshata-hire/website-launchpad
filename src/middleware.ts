@@ -37,6 +37,12 @@ export default auth((req) => {
     return NextResponse.next()
   }
 
+  // The custom sign-in page itself must be reachable without a session, otherwise
+  // redirecting unauthenticated users to it would loop.
+  if (pathname === '/admin/login') {
+    return NextResponse.next()
+  }
+
   // `req.auth` is set only for a session that cleared the @pingcap.com signIn gate.
   if (req.auth) {
     return NextResponse.next()
