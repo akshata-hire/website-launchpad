@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import { signIn } from '@/auth'
 
 export const metadata: Metadata = {
@@ -40,7 +41,14 @@ export default async function AdminLoginPage({
     <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-sm rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
         <div className="mb-8 text-center">
-          <p className="font-mono text-sm font-bold tracking-wide text-gray-900">TiDB</p>
+          <Image
+            src="https://static.pingcap.com/files/2026/02/12215103/logo-TiDB.svg"
+            alt="TiDB"
+            width={96}
+            height={40}
+            className="mx-auto block h-9 w-auto"
+            priority
+          />
           <h1 className="mt-5 text-xl font-bold text-gray-900">AI Website Platform Admin</h1>
           <p className="mt-2 text-sm leading-relaxed text-gray-500">
             Use your <span className="font-medium text-gray-700">@pingcap.com</span> Google account
