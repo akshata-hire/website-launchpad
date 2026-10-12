@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     siteName: 'TiDB',
     images: [
       {
-        url: 'https://static.pingcap.com/files/2024/09/11005522/Homepage-Ad.png',
+        url: 'https://static.pingcap.com/files/2026/10/08015109/tidb-social-image.png',
         width: 1200,
         height: 630,
       },
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     site: '@PingCAP',
-    images: ['https://static.pingcap.com/files/2024/09/11005522/Homepage-Ad.png'],
+    images: ['https://static.pingcap.com/files/2026/10/08015109/tidb-social-image.png'],
   },
 }
 
@@ -378,7 +378,8 @@ const dsl: PageDSL = {
       id: 'faq',
       type: 'faq',
       props: {
-        title: 'FAQs: for choosing a vibe coding tech stack',
+        // title-case-ignore -- "For" is capitalized as the first word after the colon
+        title: 'FAQs: For Choosing a Vibe Coding Tech Stack',
         items: [
           {
             q: 'Is vibe coding ready to ship to production in 2026?',

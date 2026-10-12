@@ -22,6 +22,13 @@ export interface PageMeta {
   header?: 'full' | 'lp'
   // Optional CTA shown on the right of the 'lp' header. Ignored for 'full'.
   headerCta?: Cta
+  // Authorship — stamped server-side on every write (publish / draft-save / copy).
+  // `createdBy`/`createdAt` are set once and preserved; `modifiedBy`/`modifiedAt`
+  // update on each write. Values are the signed-in Google email (or `local-dev`).
+  createdBy?: string
+  createdAt?: string
+  modifiedBy?: string
+  modifiedAt?: string
 }
 
 export interface Cta {
@@ -121,6 +128,7 @@ export interface SectionStyle {
   background?:
     | 'primary'
     | 'inverse'
+    | 'gray'
     | 'gradient-dark-top'
     | 'gradient-dark-bottom'
     | 'brand-red'
@@ -457,7 +465,6 @@ export interface FeatureMediaItemDSL {
     muted?: boolean
     controls?: boolean
   }
-  imagePosition?: 'left' | 'right'
 }
 
 // ─── Columns ───────────────────────────────────────────────────────────────
@@ -524,19 +531,6 @@ export interface ColumnsProps extends ColumnMedia {
 export interface ShortcodeProps {
   shortCode: string
   className?: string
-  /** When present, a video is rendered on the media side instead of the image. */
-  video?: {
-    src?: string
-    sources?: { src: string; type?: string }[]
-    poster?: string
-    width?: number
-    height?: number
-    autoPlay?: boolean
-    loop?: boolean
-    muted?: boolean
-    controls?: boolean
-  }
-  imagePosition?: 'left' | 'right'
 }
 
 // ─── HubSpot Form ────────────────────────────────────────────────────────────

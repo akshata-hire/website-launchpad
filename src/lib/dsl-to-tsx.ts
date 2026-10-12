@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     siteName: 'TiDB',
     images: [
       {
-        url: 'https://static.pingcap.com/files/2024/09/11005522/Homepage-Ad.png',
+        url: 'https://static.pingcap.com/files/2026/10/08015109/tidb-social-image.png',
         width: 1200,
         height: 630,
       },
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     site: '@PingCAP',
-    images: ['https://static.pingcap.com/files/2024/09/11005522/Homepage-Ad.png'],
+    images: ['https://static.pingcap.com/files/2026/10/08015109/tidb-social-image.png'],
   },
 }
 
@@ -75,7 +75,7 @@ const dsl: PageDSL = ${JSON.stringify(normalized, null, 2)}
 export default function GeneratedPage() {
   return (
     <>
-      <JsonLd data={withFaqFromDSL(schema, dsl)} />
+      <JsonLd data={schema} />
       <PageRenderer dsl={dsl} withChrome />
     </>
   )

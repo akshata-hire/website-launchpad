@@ -7,6 +7,7 @@ import { ExactHeroBackground } from './ExactHeroBackground'
 const BACKGROUND_CLASS: Record<string, string> = {
   primary: 'bg-bg-primary',
   inverse: 'bg-bg-inverse',
+  gray: 'bg-bg-gray',
   'gradient-dark-top': 'bg-gradient-dark-top',
   'gradient-dark-bottom': 'bg-gradient-dark-bottom',
   'brand-red': 'bg-brand-red-bg',
@@ -44,13 +45,15 @@ export function resolveSectionStyle(style?: SectionStyle, defaults?: SectionStyl
 type ContentWidth = 'sm' | 'md' | 'lg'
 
 const CONTENT_WIDTH_CLASS: Record<ContentWidth, string> = {
-  sm: 'max-w-content-sm mx-auto',
-  md: 'max-w-content-md mx-auto',
+  sm: 'contain lg:max-w-content-sm',
+  md: 'contain lg:max-w-content-md',
   lg: 'contain',
 }
 
 export function getToneFromBackground(background?: SectionStyle['background']): 'light' | 'dark' {
-  return background === 'inverse' || background === 'none' ? 'dark' : 'light'
+  return background === 'inverse' || background === 'gray' || background === 'none'
+    ? 'dark'
+    : 'light'
 }
 
 interface SectionWrapperProps {

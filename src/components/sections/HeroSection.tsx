@@ -32,7 +32,7 @@ export interface HeroImageSlot {
 interface HeroSectionProps {
   /**
    * Layout variant.
-   * - `'split'`                 — 1:1 grid, left text, right `rightSlot`
+   * - `'split'`                 — left text, right `rightSlot`; see `splitRatio`
    * - `'centered'`              — centered text with optional background image
    * - `'image-right'` (default) — left text (max-w 780px) + right `heroImage`
    */
@@ -49,11 +49,19 @@ interface HeroSectionProps {
    * `"Unlock <span class=\"text-gradient-violet animate-glow-sweep\">TiDB Cloud</span>"`
    */
   headline: string | React.ReactNode
+  /** Extra classes for the <h1>, e.g. to step the size down for a long headline. */
+  headlineClassName?: string
   subheadline?: string | React.ReactNode
   primaryCta?: { text: string; href: string }
   secondaryCta?: { text: string; href: string }
   /** Right column content. Used in `split` layout. */
   rightSlot?: React.ReactNode
+  /**
+   * Column balance for `split` layout.
+   * - `'balanced'` (default) — 1:1, unchanged behaviour
+   * - `'text-heavy'`         — 3:2, gives a long headline room to breathe
+   */
+  splitRatio?: 'balanced' | 'text-heavy'
   /** Hero image config. Used in `image-right` layout. */
   heroImage?: HeroImageSlot
   className?: string
@@ -93,6 +101,7 @@ function HeroTextBlock({
   eyebrow,
   statusBadge,
   headline,
+  headlineClassName,
   subheadline,
   primaryCta,
   secondaryCta,
@@ -101,7 +110,13 @@ function HeroTextBlock({
   decorative,
 }: Pick<
   HeroSectionProps,
-  'eyebrow' | 'statusBadge' | 'headline' | 'subheadline' | 'primaryCta' | 'secondaryCta'
+  | 'eyebrow'
+  | 'statusBadge'
+  | 'headline'
+  | 'headlineClassName'
+  | 'subheadline'
+  | 'primaryCta'
+  | 'secondaryCta'
 > & { centered?: boolean; decorative?: boolean; className?: string }) {
   // Detect HTML strings so we can use dangerouslySetInnerHTML
   const isHtmlHeadline = typeof headline === 'string' && /<[a-z][\s\S]*>/i.test(headline)
@@ -123,7 +138,8 @@ function HeroTextBlock({
           'text-h1-mb md:text-h1 font-bold leading-tight max-w-hero-title',
           decorative && 'md:text-[52px] lg:text-[56px] xl:text-h1',
           !isHtmlHeadline && 'whitespace-pre-line',
-          centered && 'mx-auto'
+          centered && 'mx-auto',
+          headlineClassName
         )}
         {...(isHtmlHeadline ? { dangerouslySetInnerHTML: { __html: headline as string } } : {})}
       >
@@ -165,12 +181,14 @@ export function HeroSection({
   eyebrow,
   statusBadge,
   headline,
+  headlineClassName,
   subheadline,
   primaryCta,
   secondaryCta,
   rightSlot,
   heroImage,
   imagePresentation,
+  splitRatio = 'balanced',
   className,
 }: HeroSectionProps) {
   const resolvedLayout: HeroLayout = layout ?? 'image-right'
@@ -190,6 +208,7 @@ export function HeroSection({
             eyebrow={eyebrow}
             statusBadge={statusBadge}
             headline={headline}
+            headlineClassName={headlineClassName}
             subheadline={subheadline}
             primaryCta={primaryCta}
             secondaryCta={secondaryCta}
@@ -198,13 +217,19 @@ export function HeroSection({
           />
         )}
 
-        {/* Layout 2: split — 1:1 grid, right = rightSlot */}
+        {/* Layout 2: split — text left, rightSlot right; ratio per `splitRatio` */}
         {resolvedLayout === 'split' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          <div
+            className={cn(
+              'grid grid-cols-1 gap-8 items-center',
+              splitRatio === 'text-heavy' ? 'lg:grid-cols-[3fr_2fr]' : 'lg:grid-cols-2'
+            )}
+          >
             <HeroTextBlock
               eyebrow={eyebrow}
               statusBadge={statusBadge}
               headline={headline}
+              headlineClassName={headlineClassName}
               subheadline={subheadline}
               primaryCta={primaryCta}
               secondaryCta={secondaryCta}
@@ -226,6 +251,7 @@ export function HeroSection({
               eyebrow={eyebrow}
               statusBadge={statusBadge}
               headline={headline}
+              headlineClassName={headlineClassName}
               subheadline={subheadline}
               primaryCta={primaryCta}
               secondaryCta={secondaryCta}

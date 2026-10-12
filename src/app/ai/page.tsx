@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     siteName: 'TiDB',
     images: [
       {
-        url: 'https://static.pingcap.com/files/2024/09/11005522/Homepage-Ad.png',
+        url: 'https://static.pingcap.com/files/2026/10/08015109/tidb-social-image.png',
         width: 1200,
         height: 630,
       },
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     site: '@PingCAP',
-    images: ['https://static.pingcap.com/files/2024/09/11005522/Homepage-Ad.png'],
+    images: ['https://static.pingcap.com/files/2026/10/08015109/tidb-social-image.png'],
   },
 }
 
@@ -176,7 +176,7 @@ const dsl: PageDSL = {
             title: 'Stateful Agents and Autonomous Workflows',
             description:
               'Build agents that maintain memory, coordinate tools, and operate reliably across complex, multi-step processes.',
-            href: '/ai/agentic-ai/',
+            href: 'https://www.pingcap.com/ai/agentic-ai/',
           },
         ],
         columns: 2,
@@ -190,7 +190,7 @@ const dsl: PageDSL = {
       id: 'cta-1776830986643',
       type: 'cta',
       props: {
-        title: "Choosing a database for AI agents? Here's the full comparison.",
+        title: "Choosing a Database for AI Agents? Here's the Full Comparison.",
         subtitle:
           'Memory architecture, ACID guarantees, multi-agent isolation — TiDB, Pinecone, Redis, pgvector and more.',
         image: {

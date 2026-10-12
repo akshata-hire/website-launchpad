@@ -165,7 +165,7 @@
             "icon": "Package",
             "title": "Best MySQL-Compatible Databases",
             "description": "MySQL compatibility doesn't mean MySQL behavior. Covers forks, managed services, sharding tools, and distributed SQL and what each one costs you at scale.",
-            "href": "pingcap.com/compare/mysql-compatible-database"
+            "href": "https://www.pingcap.com/compare/mysql-compatible-database"
           },
           {
             "title": "Best Databases for Real-Time Analytics",

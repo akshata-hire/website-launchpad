@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import prettier from 'prettier'
 import { dslToTsx } from '@/lib/dsl-to-tsx'
 import { SITE_BASE_URL } from '@/lib/env'
+import { logAudit, resolveActor } from '@/lib/audit'
+import { stampAuthorship } from '@/lib/authorship'
+import { getGitHubAuthHeaders } from '@/lib/github-auth'
 import type { PageDSL } from '@/lib/dsl-schema'
 
 interface PublishRequest {
@@ -19,8 +22,8 @@ function injectSitemapEntry(
   priority: number,
   changeFrequency: string
 ): string {
-  const newEntry = `    { url: '/${slug}/', priority: ${priority}, changeFrequency: '${changeFrequency}' },`
-  const insertPoint = source.lastIndexOf('\n  ]')
+  const newEntry = `  { url: '/${slug}/', priority: ${priority}, changeFrequency: '${changeFrequency}' },`
+  const insertPoint = source.lastIndexOf('\n]')
   if (insertPoint === -1) throw new Error('Could not find sitemap routes array closing bracket')
   return source.slice(0, insertPoint) + '\n' + newEntry + source.slice(insertPoint)
 }
@@ -44,7 +47,7 @@ function isValidBranchName(branch: string) {
 }
 
 export async function POST(request: NextRequest) {
-  const { GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, VERCEL_OWNER } = process.env
+  const { GITHUB_OWNER, GITHUB_REPO, VERCEL_OWNER } = process.env
   const mainPublishToken = process.env.PUBLISH_MAIN_TOKEN
   if (process.env.MOCK_PUBLISH_SUCCESS === '1') {
     const body = (await request.json().catch(() => ({}))) as PublishRequest
@@ -59,7 +62,7 @@ export async function POST(request: NextRequest) {
       deployUrl: mockDeployUrl,
     })
   }
-  if (!GITHUB_TOKEN || !GITHUB_OWNER || !GITHUB_REPO || !VERCEL_OWNER) {
+  if (!GITHUB_OWNER || !GITHUB_REPO || !VERCEL_OWNER) {
     return NextResponse.json({ error: 'Environment variables not configured' }, { status: 500 })
   }
 
@@ -87,6 +90,13 @@ export async function POST(request: NextRequest) {
   if (branch === 'main') {
     const providedToken = request.headers.get('x-publish-main-token')
     if (!mainPublishToken || !providedToken || providedToken !== mainPublishToken) {
+      await logAudit(request, {
+        action: 'publish',
+        target: slug,
+        branch,
+        status: 'denied',
+        detail: 'missing or invalid x-publish-main-token',
+      })
       return NextResponse.json(
         {
           error: 'Publishing to main is restricted. Provide a valid x-publish-main-token header.',
@@ -106,11 +116,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid DSL structure' }, { status: 400 })
   }
 
-  const headers = {
-    Authorization: `Bearer ${GITHUB_TOKEN}`,
-    Accept: 'application/vnd.github+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-    'Content-Type': 'application/json',
+  // Record authorship (who/when) into the DSL meta before it is committed. The
+  // creator is preserved if already set; the modifier is always the current user.
+  const actor = await resolveActor()
+  stampAuthorship(dsl, actor)
+
+  const headers = await getGitHubAuthHeaders()
+  if (!headers) {
+    return NextResponse.json({ error: 'Environment variables not configured' }, { status: 500 })
   }
   const baseUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}`
 
@@ -138,7 +151,7 @@ export async function POST(request: NextRequest) {
 
   // Read and patch sitemap if requested
   if (addToSitemap) {
-    const sitemapPath = 'src/app/sitemap.ts'
+    const sitemapPath = 'src/app/launchpad-sitemap.xml/route.ts'
     const sitemapRes = await fetch(`${baseUrl}/contents/${sitemapPath}?ref=${branch}`, { headers })
     if (sitemapRes.ok) {
       const sitemapData = (await sitemapRes.json()) as { content: string }
@@ -211,7 +224,7 @@ export async function POST(request: NextRequest) {
   const { sha: newTreeSha } = (await treeRes.json()) as { sha: string }
 
   // 5. Create commit
-  const hasSitemap = files.some((f) => f.path === 'src/app/sitemap.ts')
+  const hasSitemap = files.some((f) => f.path === 'src/app/launchpad-sitemap.xml/route.ts')
   const commitMessage = hasSitemap
     ? `feat: publish /${slug}/ and add to sitemap`
     : `feat: publish /${slug}/`
@@ -249,6 +262,14 @@ export async function POST(request: NextRequest) {
     branch === 'main'
       ? `https://www.pingcap.com/${slug}/`
       : `${SITE_BASE_URL.replace(/\/$/, '') || `https://${GITHUB_REPO}-git-${branch.replace(/[^a-z0-9]/g, '-')}-${VERCEL_OWNER}.vercel.app`}/${slug}/`
+
+  await logAudit(request, {
+    action: 'publish',
+    target: slug,
+    branch,
+    status: 'success',
+    detail: hasSitemap ? 'page + sitemap' : 'page',
+  })
 
   return NextResponse.json({
     success: true,

@@ -27,6 +27,7 @@
  */
 
 import type { FaqProps, PageDSL } from './dsl-schema'
+import { richTextToPlainText } from './rich-text-render'
 
 const SITE_URL = 'https://www.pingcap.com'
 const SITE_NAME = 'TiDB | SQL at Scale'
@@ -59,6 +60,14 @@ export interface BuildPageSchemaOptions {
   dateModified?: string
   /** OG image URL */
   image?: string
+  /**
+   * `@id` of the entity this page is about. Defaults to the Organization, which
+   * is right for pages whose subject is PingCAP itself. A page about a specific
+   * product should point at that product's node instead, so an answer engine
+   * reading the graph can tell what the page describes. Existing callers are
+   * unaffected.
+   */
+  aboutId?: string
 }
 
 // ─── Main builder ─────────────────────────────────────────────────────────────
@@ -73,6 +82,7 @@ export function buildPageSchema({
   datePublished,
   dateModified,
   image,
+  aboutId,
 }: BuildPageSchemaOptions): Record<string, unknown> {
   const pageUrl = `${SITE_URL}${path}`
   const pageId = `${pageUrl}#webpage`
@@ -115,7 +125,7 @@ export function buildPageSchema({
       name: title,
       description,
       isPartOf: { '@id': WEBSITE_ID },
-      about: { '@id': ORG_ID },
+      about: { '@id': aboutId ?? ORG_ID },
       ...(image && { image: { '@type': 'ImageObject', url: image } }),
       ...(datePublished && { datePublished }),
       ...(dateModified && { dateModified }),
@@ -156,7 +166,12 @@ export function softwareApplicationSchema(options: {
   name: string
   description: string
   url: string
-  price?: string
+  /**
+   * Price for the Offer node. Omitted from the payload when `null` — use that
+   * for products with no published price, so the schema doesn't assert "free"
+   * on a page whose own copy says pricing isn't published yet.
+   */
+  price?: string | null
 }): Record<string, unknown> {
   return {
     '@type': 'SoftwareApplication',
@@ -165,11 +180,15 @@ export function softwareApplicationSchema(options: {
     operatingSystem: 'Linux, macOS, Windows',
     description: options.description,
     url: options.url,
-    offers: {
-      '@type': 'Offer',
-      price: options.price ?? '0',
-      priceCurrency: 'USD',
-    },
+    ...(options.price === null
+      ? {}
+      : {
+          offers: {
+            '@type': 'Offer',
+            price: options.price ?? '0',
+            priceCurrency: 'USD',
+          },
+        }),
   }
 }
 
@@ -242,8 +261,8 @@ export function faqSchema(items: { question: string; answer: string }[]): Record
 
 /**
  * Build a FAQPage node from a DSL page's `faq` sections. Returns `null` when the
- * page has no faq section (or no string answers). Only string answers are
- * included — JSON-LD `text` must be plain text.
+ * page has no faq section (or no string answers). Answers are flattened to plain
+ * text — JSON-LD `text` must not carry the DSL's rich-text markup.
  *
  * Single source of truth for FAQ structured data: pages collect their FAQ schema
  * here (via buildPageSchema / withFaqFromDSL) instead of letting <FaqSection>
@@ -257,8 +276,12 @@ export function faqSchemaFromDSL(dsl: PageDSL): Record<string, unknown> | null {
     // type guard above guarantees this is a faq section.
     const faqProps = section.props as FaqProps
     for (const item of faqProps.items ?? []) {
-      if (typeof item.a === 'string' && item.a.length > 0) {
-        items.push({ question: item.q, answer: item.a })
+      if (typeof item.a !== 'string') continue
+      // DSL answers are rich text. JSON-LD has no markdown, so flatten first —
+      // otherwise `[label](url)` lands in acceptedAnswer.text verbatim.
+      const answer = richTextToPlainText(item.a)
+      if (answer.length > 0) {
+        items.push({ question: item.q, answer })
       }
     }
   }

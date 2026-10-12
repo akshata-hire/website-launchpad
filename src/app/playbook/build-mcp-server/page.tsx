@@ -1,24 +1,24 @@
 import type { Metadata } from 'next'
 import { JsonLd } from '@/components/ui/JsonLd'
-import { buildPageSchema } from '@/lib/schema'
+import { buildPageSchema, withFaqFromDSL } from '@/lib/schema'
 import { PageRenderer } from '@/lib/page-renderer'
 import type { PageDSL } from '@/lib/dsl-schema'
 
 export const metadata: Metadata = {
-  title: 'Build MCP Server With TiDB Cloud Zero - TiDB',
+  title: 'Build MCP Server with TiDB Cloud Zero - TiDB',
   description:
     'Learn how to build MCP server tools with TiDB Cloud Zero, persistent SQL state, and a clear path from local testing to production.',
   robots: { index: true, follow: true },
   alternates: { canonical: 'https://www.pingcap.com/playbook/build-mcp-server/' },
   openGraph: {
-    title: 'Build MCP Server With TiDB Cloud Zero - TiDB',
+    title: 'Build MCP Server with TiDB Cloud Zero - TiDB',
     description:
       'Learn how to build MCP server tools with TiDB Cloud Zero, persistent SQL state, and a clear path from local testing to production.',
     url: 'https://www.pingcap.com/playbook/build-mcp-server/',
     siteName: 'TiDB',
     images: [
       {
-        url: 'https://static.pingcap.com/files/2024/09/11005522/Homepage-Ad.png',
+        url: 'https://static.pingcap.com/files/2026/10/08015109/tidb-social-image.png',
         width: 1200,
         height: 630,
       },
@@ -28,13 +28,13 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     site: '@PingCAP',
-    images: ['https://static.pingcap.com/files/2024/09/11005522/Homepage-Ad.png'],
+    images: ['https://static.pingcap.com/files/2026/10/08015109/tidb-social-image.png'],
   },
 }
 
 const schema = buildPageSchema({
   path: '/playbook/build-mcp-server/',
-  title: 'Build MCP Server With TiDB Cloud Zero - TiDB',
+  title: 'Build MCP Server with TiDB Cloud Zero - TiDB',
   description:
     'Learn how to build MCP server tools with TiDB Cloud Zero, persistent SQL state, and a clear path from local testing to production.',
   breadcrumbs: [
@@ -49,7 +49,7 @@ const schema = buildPageSchema({
 const dsl: PageDSL = {
   pageName: 'How to Build an MCP Server with TiDB Cloud Zero',
   meta: {
-    title: 'Build MCP Server With TiDB Cloud Zero - TiDB',
+    title: 'Build MCP Server with TiDB Cloud Zero - TiDB',
     description:
       'Learn how to build MCP server tools with TiDB Cloud Zero, persistent SQL state, and a clear path from local testing to production.',
     canonical: '/playbook/build-mcp-server/',
@@ -292,7 +292,7 @@ const dsl: PageDSL = {
 export default function GeneratedPage() {
   return (
     <>
-      <JsonLd data={schema} />
+      <JsonLd data={withFaqFromDSL(schema, dsl)} />
       <PageRenderer dsl={dsl} withChrome />
     </>
   )

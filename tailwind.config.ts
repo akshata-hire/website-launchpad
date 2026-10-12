@@ -25,6 +25,10 @@ const config: Config = {
             dark: '#10487B',
             medium: '#2C80CE',
             light: '#509DEA',
+            // Pale tint used by the existing pricing-details pages for their
+            // public-preview callout. Taken from those pages rather than
+            // invented, so this page's notice matches its siblings.
+            pale: '#C0E0EF',
           },
           teal: {
             bg: '#093434',
@@ -61,6 +65,7 @@ const config: Config = {
           inverse: '#FFFFFF',
           subtle: '#E5E8EB',
           surface: '#06111A',
+          gray: '#efefef',
         },
         text: {
           primary: '#000000',
@@ -245,22 +250,6 @@ const config: Config = {
         cta: '0 4px 16px rgba(220,21,11,0.30)',
       },
       keyframes: {
-        'accordion-down': {
-          from: {
-            height: '0',
-          },
-          to: {
-            height: 'var(--radix-accordion-content-height)',
-          },
-        },
-        'accordion-up': {
-          from: {
-            height: 'var(--radix-accordion-content-height)',
-          },
-          to: {
-            height: '0',
-          },
-        },
         pulse: {
           '0%, 100%': {
             opacity: '1',
@@ -273,8 +262,6 @@ const config: Config = {
         },
       },
       animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
         pulse: 'pulse 1.8s ease-in-out infinite',
       },
     },

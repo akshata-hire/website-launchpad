@@ -481,8 +481,6 @@ function normalizeFeatureMediaItem(raw: unknown): FeatureMediaItemDSL | null {
       height: v.image?.height ?? (v as any).height,
     },
     video: normalizeFeatureMediaVideo((v as any).video),
-    imagePosition:
-      v.imagePosition === 'left' || v.imagePosition === 'right' ? v.imagePosition : undefined,
   }
 }
 

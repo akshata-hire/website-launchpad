@@ -1,12 +1,9 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
+import { cn, isVideoUrl } from '@/lib/utils'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { SlideIn } from '@/components/ui/SlideIn'
 import type { ImageRef } from '@/lib/dsl-schema'
-
-/** A media URL that points to a video file — rendered as <video> rather than <Image>. */
-const VIDEO_URL_RE = /\.(mp4|webm|mov|m4v)(\?|#|$)/i
 
 /** Inline-link markdown: [label](url). Internal (starts with / or #) → <Link>, external → <a>. */
 const INLINE_LINK_RE = /\[([^\]]+)\]\(([^)\s]+)\)/g
@@ -78,7 +75,6 @@ export interface FeatureMediaItem {
     /** Default: false. Show native playback controls. */
     controls?: boolean
   }
-  imagePosition?: 'left' | 'right'
 }
 
 interface FeatureMediaSectionProps {
@@ -132,7 +128,7 @@ export function FeatureMediaSection({
         const imageUrl = item.image?.image?.url ?? ''
         // A video URL dropped into the image field (via the media library) is
         // rendered as a video automatically — no separate `video` config needed.
-        const imageUrlIsVideo = VIDEO_URL_RE.test(imageUrl)
+        const imageUrlIsVideo = isVideoUrl(imageUrl)
         const videoSrc = video.src ?? (imageUrlIsVideo ? imageUrl : undefined)
         const hasVideo = Boolean(videoSrc || videoSources.length > 0)
 
