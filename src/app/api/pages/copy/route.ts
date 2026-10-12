@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { logAudit } from '@/lib/audit'
 
 const DRAFT_BRANCH = 'drafts/ai'
 
@@ -167,6 +168,13 @@ export async function POST(req: NextRequest) {
     const msg = err instanceof Error ? err.message : 'Unknown error during copy'
     return NextResponse.json({ error: msg }, { status: 500 })
   }
+
+  await logAudit(req, {
+    action: 'copy',
+    target: from,
+    targetTo: to,
+    status: 'success',
+  })
 
   return NextResponse.json({ success: true, slug: to })
 }

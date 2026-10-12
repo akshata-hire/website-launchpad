@@ -68,3 +68,24 @@ Merging this does not lock anyone out of production (admin is already 404 there)
 It **does** gate preview/staging: once deployed, `AUTH_SECRET` + the Google
 credentials must be present in the Preview environment or the admin will reject
 sign-in. Configure them before/with the merge.
+
+## Audit logging (user operation records)
+
+Every state-changing admin operation emits one structured JSON line via
+`logAudit()` (`src/lib/audit.ts`). On Vercel these land in the deployment's
+runtime logs (Project → Logs) and can be forwarded to a log drain for retention.
+
+Logged routes: `POST /api/publish` (success + main-token denial),
+`POST /api/pages/delete`, `POST /api/pages/move`, `POST /api/pages/copy`,
+`PUT /api/pages/[...slug]` (draft save), `POST /api/admin/upload-image`.
+
+Each line carries: `ts`, `actor` (the signed-in Google email; `local-dev` when
+login is bypassed locally), `ip`, `env`, `action`, `target`, optional `targetTo`
+/ `branch` / `detail`, and `status` (`success` | `denied` | `error`). Filter the
+logs by the `[audit]` prefix, e.g.:
+
+```
+[audit] {"ts":"…","actor":"alice@pingcap.com","action":"delete","target":"lp/foo","status":"success","detail":"2 file(s)"}
+```
+
+The actor is only meaningful where login is enforced (the staging deployment).
