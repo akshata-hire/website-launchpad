@@ -4,12 +4,15 @@ import { auth } from '@/auth'
 /**
  * Gates the admin surface (`/admin/*`) and its API routes (`/api/*`).
  *
- * - Production: fully disabled (404), unchanged from before — the CMS only ever
- *   runs on preview/staging and locally.
+ * - Production: fully disabled (404), unchanged from before.
+ * - Any deployed branch other than `staging` (per-PR previews, etc.): also 404,
+ *   so the admin only ever appears on the single staging deployment — shrinking
+ *   the exposed surface to one known host.
  * - Local development: no login gate. localhost is not internet-exposed, so this
  *   keeps the dev loop friction-free.
- * - Preview / staging: requires a signed-in Google user on the @pingcap.com
- *   domain (domain enforcement lives in the `signIn` callback in `@/auth`).
+ * - Staging preview: requires a signed-in Google user on the @pingcap.com domain
+ *   (domain enforcement lives in the `signIn` callback in `@/auth`). The staging
+ *   URL is public, so login — not obscurity — is what actually protects it.
  */
 export default auth((req) => {
   const { pathname } = req.nextUrl
@@ -21,6 +24,12 @@ export default auth((req) => {
 
   if (!vercelEnv) {
     return NextResponse.next()
+  }
+
+  // Deployed but not the staging branch (VERCEL_ENV is 'preview' for every branch
+  // preview, so distinguish by the deployed git ref). Hide admin on those too.
+  if (process.env.VERCEL_GIT_COMMIT_REF !== 'staging') {
+    return new NextResponse(null, { status: 404 })
   }
 
   // Auth.js endpoints must stay reachable so the sign-in round-trip can complete.
