@@ -3,7 +3,11 @@
   "meta": {
     "title": "TiDB Cloud Startup Program | $100K Credits",
     "description": "Launch your startup with $100,000 in TiDB Cloud credits. Get serverless scalability, enterprise support, and no upfront costs. Apply now.",
-    "canonical": "/startup-program-test/"
+    "canonical": "/startup-program-test/",
+    "createdBy": "liwen.xu@pingcap.com",
+    "createdAt": "2026-10-12T12:29:48.922Z",
+    "modifiedBy": "liwen.xu@pingcap.com",
+    "modifiedAt": "2026-10-12T12:29:48.922Z"
   },
   "sections": [
     {
