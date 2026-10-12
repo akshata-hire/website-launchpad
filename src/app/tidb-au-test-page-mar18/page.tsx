@@ -5,13 +5,15 @@ import { PageRenderer } from '@/lib/page-renderer'
 import type { PageDSL } from '@/lib/dsl-schema'
 
 export const metadata: Metadata = {
-  title: "TiDB: Modern Database for Intelligent Applications",
-  description: "Scale your data infrastructure with TiDB. Real-time analytics, enterprise-grade reliability, and seamless MySQL compatibility for your most demanding workloads.",
+  title: 'TiDB: Modern Database for Intelligent Applications',
+  description:
+    'Scale your data infrastructure with TiDB. Real-time analytics, enterprise-grade reliability, and seamless MySQL compatibility for your most demanding workloads.',
   robots: { index: true, follow: true },
   alternates: { canonical: 'https://www.pingcap.com/database-for-modern-apps/' },
   openGraph: {
-    title: "TiDB: Modern Database for Intelligent Applications",
-    description: "Scale your data infrastructure with TiDB. Real-time analytics, enterprise-grade reliability, and seamless MySQL compatibility for your most demanding workloads.",
+    title: 'TiDB: Modern Database for Intelligent Applications',
+    description:
+      'Scale your data infrastructure with TiDB. Real-time analytics, enterprise-grade reliability, and seamless MySQL compatibility for your most demanding workloads.',
     url: 'https://www.pingcap.com/database-for-modern-apps/',
     siteName: 'TiDB',
     images: [
@@ -31,302 +33,320 @@ export const metadata: Metadata = {
 }
 
 const schema = buildPageSchema({
-  path: "/database-for-modern-apps/",
-  title: "TiDB: Modern Database for Intelligent Applications",
-  description: "Scale your data infrastructure with TiDB. Real-time analytics, enterprise-grade reliability, and seamless MySQL compatibility for your most demanding workloads.",
+  path: '/database-for-modern-apps/',
+  title: 'TiDB: Modern Database for Intelligent Applications',
+  description:
+    'Scale your data infrastructure with TiDB. Real-time analytics, enterprise-grade reliability, and seamless MySQL compatibility for your most demanding workloads.',
   breadcrumbs: [
     { name: 'Home', path: '/' },
-    { name: "Build Fast, Scale Infinitely with <span class=\"text-gradient-violet\">TiDB</span>", path: "/database-for-modern-apps/" },
+    {
+      name: 'Build Fast, Scale Infinitely with <span class="text-gradient-violet">TiDB</span>',
+      path: '/database-for-modern-apps/',
+    },
   ],
 })
 
 const dsl: PageDSL = {
-  "meta": {
-    "title": "TiDB: Modern Database for Intelligent Applications",
-    "description": "Scale your data infrastructure with TiDB. Real-time analytics, enterprise-grade reliability, and seamless MySQL compatibility for your most demanding workloads.",
-    "canonical": "/database-for-modern-apps/"
+  meta: {
+    title: 'TiDB: Modern Database for Intelligent Applications',
+    description:
+      'Scale your data infrastructure with TiDB. Real-time analytics, enterprise-grade reliability, and seamless MySQL compatibility for your most demanding workloads.',
+    canonical: '/database-for-modern-apps/',
   },
-  "sections": [
+  sections: [
     {
-      "id": "hero",
-      "type": "hero",
-      "props": {
-        "layout": "centered",
-        "eyebrow": "Next-Generation Database",
-        "headline": "Build Fast, Scale Infinitely with <span class=\"text-gradient-violet\">TiDB</span>",
-        "subheadline": "The open-source, distributed SQL database designed for modern applications. Real-time analytics meets transactional consistency at any scale.",
-        "primaryCta": {
-          "text": "Start Free Trial",
-          "href": "https://tidbcloud.com/free-trial/"
+      id: 'hero',
+      type: 'hero',
+      props: {
+        layout: 'centered',
+        eyebrow: 'Next-Generation Database',
+        headline:
+          'Build Fast, Scale Infinitely with <span class="text-gradient-violet">TiDB</span>',
+        subheadline:
+          'The open-source, distributed SQL database designed for modern applications. Real-time analytics meets transactional consistency at any scale.',
+        primaryCta: {
+          text: 'Start Free Trial',
+          href: 'https://tidbcloud.com/free-trial/',
         },
-        "secondaryCta": {
-          "text": "View Documentation",
-          "href": "https://docs.pingcap.com/"
+        secondaryCta: {
+          text: 'View Documentation',
+          href: 'https://docs.pingcap.com/',
         },
-        "heroImage": {
-          "image": {
-            "url": "https://static.pingcap.com/images/f54533cc-1000011158.svg"
+        heroImage: {
+          image: {
+            url: 'https://static.pingcap.com/images/f54533cc-1000011158.svg',
           },
-          "alt": "hero image",
-          "width": 500,
-          "height": 400
-        }
+          alt: 'hero image',
+          width: 500,
+          height: 400,
+        },
       },
-      "style": {
-        "background": "gradient-dark-bottom",
-        "spacing": "hero"
-      }
+      style: {
+        background: 'gradient-dark-bottom',
+        spacing: 'hero',
+      },
     },
     {
-      "id": "stats",
-      "type": "stats",
-      "props": {
-        "title": "Trusted by Industry Leaders",
-        "subtitle": "Deploy with confidence using TiDB's proven infrastructure",
-        "items": [
+      id: 'stats',
+      type: 'stats',
+      props: {
+        title: 'Trusted by Industry Leaders',
+        subtitle: "Deploy with confidence using TiDB's proven infrastructure",
+        items: [
           {
-            "icon": "Zap",
-            "value": "99.99%",
-            "label": "Uptime SLA",
-            "description": "Enterprise-grade reliability"
+            icon: 'Zap',
+            value: '99.99%',
+            label: 'Uptime SLA',
+            description: 'Enterprise-grade reliability',
           },
           {
-            "icon": "Globe",
-            "value": "150+",
-            "label": "Deployments",
-            "description": "Across global enterprises"
+            icon: 'Globe',
+            value: '150+',
+            label: 'Deployments',
+            description: 'Across global enterprises',
           },
           {
-            "icon": "BarChart",
-            "value": "10x",
-            "label": "Performance Gain",
-            "description": "vs. traditional databases"
+            icon: 'BarChart',
+            value: '10x',
+            label: 'Performance Gain',
+            description: 'vs. traditional databases',
           },
           {
-            "icon": "Shield",
-            "value": "$0",
-            "label": "Setup Cost",
-            "description": "Open-source and free to start"
-          }
+            icon: 'Shield',
+            value: '$0',
+            label: 'Setup Cost',
+            description: 'Open-source and free to start',
+          },
         ],
-        "columns": 4
+        columns: 4,
       },
-      "style": {
-        "background": "none",
-        "spacing": "section"
-      }
+      style: {
+        background: 'none',
+        spacing: 'section',
+      },
     },
     {
-      "id": "features",
-      "type": "featureGrid",
-      "props": {
-        "eyebrow": "Core Capabilities",
-        "title": "Everything You Need to Compete",
-        "subtitle": "TiDB combines OLTP and OLAP in one platform",
-        "items": [
+      id: 'features',
+      type: 'featureGrid',
+      props: {
+        eyebrow: 'Core Capabilities',
+        title: 'Everything You Need to Compete',
+        subtitle: 'TiDB combines OLTP and OLAP in one platform',
+        items: [
           {
-            "icon": "Database",
-            "title": "Horizontal Scalability",
-            "description": "Scale compute and storage independently without downtime. Handle petabytes of data seamlessly."
+            icon: 'Database',
+            title: 'Horizontal Scalability',
+            description:
+              'Scale compute and storage independently without downtime. Handle petabytes of data seamlessly.',
           },
           {
-            "icon": "Zap",
-            "title": "Microsecond Latency",
-            "description": "Sub-millisecond response times for mission-critical queries and transactions."
+            icon: 'Zap',
+            title: 'Microsecond Latency',
+            description:
+              'Sub-millisecond response times for mission-critical queries and transactions.',
           },
           {
-            "icon": "RefreshCw",
-            "title": "HTAP Architecture",
-            "description": "Real-time analytics and transaction processing in a single system. No ETL delays."
+            icon: 'RefreshCw',
+            title: 'HTAP Architecture',
+            description:
+              'Real-time analytics and transaction processing in a single system. No ETL delays.',
           },
           {
-            "icon": "Lock",
-            "title": "ACID Compliance",
-            "description": "Distributed transactions with full ACID guarantees across all regions."
+            icon: 'Lock',
+            title: 'ACID Compliance',
+            description: 'Distributed transactions with full ACID guarantees across all regions.',
           },
           {
-            "icon": "CheckCircle",
-            "title": "MySQL Compatible",
-            "description": "Drop-in replacement for MySQL. Migrate existing applications instantly."
+            icon: 'CheckCircle',
+            title: 'MySQL Compatible',
+            description: 'Drop-in replacement for MySQL. Migrate existing applications instantly.',
           },
           {
-            "icon": "Globe",
-            "title": "Multi-Region Resilience",
-            "description": "Geographic distribution with automatic failover and disaster recovery."
-          }
+            icon: 'Globe',
+            title: 'Multi-Region Resilience',
+            description: 'Geographic distribution with automatic failover and disaster recovery.',
+          },
         ],
-        "columns": 3
+        columns: 3,
       },
-      "style": {
-        "background": "none",
-        "spacing": "section"
-      }
+      style: {
+        background: 'none',
+        spacing: 'section',
+      },
     },
     {
-      "id": "usecases",
-      "type": "featureHighlights",
-      "props": {
-        "eyebrow": "Use Cases",
-        "title": "Purpose-Built for Complex Workloads",
-        "subtitle": "From fintech to e-commerce, TiDB powers demanding applications",
-        "items": [
+      id: 'usecases',
+      type: 'featureHighlights',
+      props: {
+        eyebrow: 'Use Cases',
+        title: 'Purpose-Built for Complex Workloads',
+        subtitle: 'From fintech to e-commerce, TiDB powers demanding applications',
+        items: [
           {
-            "variant": "violet",
-            "title": "Real-Time Analytics",
-            "description": "Analyze streaming data instantly without separate warehouses. Cut infrastructure costs by 60%.",
-            "cta": {
-              "text": "Learn More",
-              "href": "https://pingcap.com/use-cases/real-time-analytics/"
+            variant: 'violet',
+            title: 'Real-Time Analytics',
+            description:
+              'Analyze streaming data instantly without separate warehouses. Cut infrastructure costs by 60%.',
+            cta: {
+              text: 'Learn More',
+              href: 'https://pingcap.com/use-cases/real-time-analytics/',
             },
-            "icon": "BarChart2"
+            icon: 'BarChart2',
           },
           {
-            "variant": "blue",
-            "title": "Financial Services",
-            "description": "Real-time fraud detection, settlements, and compliance reporting with guaranteed consistency.",
-            "cta": {
-              "text": "Explore Solution",
-              "href": "https://pingcap.com/use-cases/fintech/"
+            variant: 'blue',
+            title: 'Financial Services',
+            description:
+              'Real-time fraud detection, settlements, and compliance reporting with guaranteed consistency.',
+            cta: {
+              text: 'Explore Solution',
+              href: 'https://pingcap.com/use-cases/fintech/',
             },
-            "icon": "TrendingUp"
+            icon: 'TrendingUp',
           },
           {
-            "variant": "teal",
-            "title": "E-Commerce Scale",
-            "description": "Handle peak traffic with 100x growth. Pay only for what you use with dynamic scaling.",
-            "cta": {
-              "text": "See Case Study",
-              "href": "https://pingcap.com/case-studies/"
+            variant: 'teal',
+            title: 'E-Commerce Scale',
+            description:
+              'Handle peak traffic with 100x growth. Pay only for what you use with dynamic scaling.',
+            cta: {
+              text: 'See Case Study',
+              href: 'https://pingcap.com/case-studies/',
             },
-            "icon": "Zap"
+            icon: 'Zap',
           },
           {
-            "variant": "red",
-            "title": "Operational Intelligence",
-            "description": "Unified monitoring, metrics, and logs in one queryable system. Real-time insights at scale.",
-            "cta": {
-              "text": "Discover Benefits",
-              "href": "https://pingcap.com/use-cases/operational-analytics/"
+            variant: 'red',
+            title: 'Operational Intelligence',
+            description:
+              'Unified monitoring, metrics, and logs in one queryable system. Real-time insights at scale.',
+            cta: {
+              text: 'Discover Benefits',
+              href: 'https://pingcap.com/use-cases/operational-analytics/',
             },
-            "icon": "Activity"
-          }
+            icon: 'Activity',
+          },
         ],
-        "columns": 2
+        columns: 2,
       },
-      "style": {
-        "background": "none",
-        "spacing": "section"
-      }
+      style: {
+        background: 'none',
+        spacing: 'section',
+      },
     },
     {
-      "id": "testimonials",
-      "type": "testimonials",
-      "props": {
-        "title": "Powering Today's Most Innovative Companies",
-        "items": [
+      id: 'testimonials',
+      type: 'testimonials',
+      props: {
+        title: "Powering Today's Most Innovative Companies",
+        items: [
           {
-            "quote": "TiDB replaced our Elasticsearch cluster and data warehouse with a single, unified platform. We cut infrastructure costs by 65% while improving query latency.",
-            "author": "Engineering Lead, ML Platform Company",
-            "logo": {
-              "image": {
-                "url": "https://static.pingcap.com/images/712552a8-dify.png"
+            quote:
+              'TiDB replaced our Elasticsearch cluster and data warehouse with a single, unified platform. We cut infrastructure costs by 65% while improving query latency.',
+            author: 'Engineering Lead, ML Platform Company',
+            logo: {
+              image: {
+                url: 'https://static.pingcap.com/images/712552a8-dify.png',
               },
-              "alt": "dify"
-            }
+              alt: 'dify',
+            },
           },
           {
-            "quote": "With TiDB's real-time analytics, we went from hours to milliseconds for fraud detection. Our transaction monitoring is now truly instantaneous.",
-            "author": "Risk Officer, Financial Services",
-            "logo": {
-              "image": {
-                "url": "https://static.pingcap.com/images/712552a8-dify.png"
+            quote:
+              "With TiDB's real-time analytics, we went from hours to milliseconds for fraud detection. Our transaction monitoring is now truly instantaneous.",
+            author: 'Risk Officer, Financial Services',
+            logo: {
+              image: {
+                url: 'https://static.pingcap.com/images/712552a8-dify.png',
               },
-              "alt": "dify"
-            }
+              alt: 'dify',
+            },
           },
           {
-            "quote": "Scaling was our biggest pain point. TiDB lets us handle 10x traffic spikes automatically without resharding or downtime. Game changer.",
-            "author": "Infrastructure Lead, E-Commerce Platform",
-            "logo": {
-              "image": {
-                "url": "https://static.pingcap.com/images/712552a8-dify.png"
+            quote:
+              'Scaling was our biggest pain point. TiDB lets us handle 10x traffic spikes automatically without resharding or downtime. Game changer.',
+            author: 'Infrastructure Lead, E-Commerce Platform',
+            logo: {
+              image: {
+                url: 'https://static.pingcap.com/images/712552a8-dify.png',
               },
-              "alt": "dify"
-            }
-          }
-        ]
+              alt: 'dify',
+            },
+          },
+        ],
       },
-      "style": {
-        "background": "gradient-dark-top",
-        "spacing": "section"
-      }
+      style: {
+        background: 'gradient-dark-top',
+        spacing: 'section',
+      },
     },
     {
-      "id": "faq",
-      "type": "faq",
-      "props": {
-        "title": "Common Questions",
-        "items": [
+      id: 'faq',
+      type: 'faq',
+      props: {
+        title: 'Common Questions',
+        items: [
           {
-            "q": "How is TiDB different from PostgreSQL or MySQL?",
-            "a": "TiDB is a distributed, horizontally scalable database with true HTAP capabilities. Unlike traditional SQL databases, it handles both transactional and analytical workloads in real-time without performance degradation. It's fully MySQL-compatible for easy migration."
+            q: 'How is TiDB different from PostgreSQL or MySQL?',
+            a: "TiDB is a distributed, horizontally scalable database with true HTAP capabilities. Unlike traditional SQL databases, it handles both transactional and analytical workloads in real-time without performance degradation. It's fully MySQL-compatible for easy migration.",
           },
           {
-            "q": "Can I migrate my existing MySQL database to TiDB?",
-            "a": "Yes. TiDB is wire-compatible with MySQL 5.7 and 8.0 protocols. Most applications require zero code changes. We provide migration tools and guidance for seamless transition with zero downtime."
+            q: 'Can I migrate my existing MySQL database to TiDB?',
+            a: 'Yes. TiDB is wire-compatible with MySQL 5.7 and 8.0 protocols. Most applications require zero code changes. We provide migration tools and guidance for seamless transition with zero downtime.',
           },
           {
-            "q": "What's the pricing model for TiDB Cloud?",
-            "a": "TiDB Cloud uses consumption-based pricing for compute and storage. You pay only for what you use, with no minimum commitments. Reserve capacity plans are available for 30-50% savings on predictable workloads."
+            q: "What's the pricing model for TiDB Cloud?",
+            a: 'TiDB Cloud uses consumption-based pricing for compute and storage. You pay only for what you use, with no minimum commitments. Reserve capacity plans are available for 30-50% savings on predictable workloads.',
           },
           {
-            "q": "Is TiDB suitable for high-frequency trading or real-time systems?",
-            "a": "Absolutely. TiDB provides sub-millisecond latency, ACID compliance, and Jepsen-verified correctness. It's battle-tested for mission-critical financial systems and operational workloads."
+            q: 'Is TiDB suitable for high-frequency trading or real-time systems?',
+            a: "Absolutely. TiDB provides sub-millisecond latency, ACID compliance, and Jepsen-verified correctness. It's battle-tested for mission-critical financial systems and operational workloads.",
           },
           {
-            "q": "How does TiDB handle disaster recovery?",
-            "a": "TiDB offers multi-region replication with automatic failover, configurable RPO/RTO, and integrated backup/restore. All data is automatically distributed across availability zones."
+            q: 'How does TiDB handle disaster recovery?',
+            a: 'TiDB offers multi-region replication with automatic failover, configurable RPO/RTO, and integrated backup/restore. All data is automatically distributed across availability zones.',
           },
           {
-            "q": "What support options are available?",
-            "a": "We offer community support (free), professional support with SLA guarantees, and dedicated enterprise support. All tiers include access to our engineering team."
-          }
-        ]
+            q: 'What support options are available?',
+            a: 'We offer community support (free), professional support with SLA guarantees, and dedicated enterprise support. All tiers include access to our engineering team.',
+          },
+        ],
       },
-      "style": {
-        "background": "none",
-        "spacing": "section"
-      }
+      style: {
+        background: 'none',
+        spacing: 'section',
+      },
     },
     {
-      "id": "cta",
-      "type": "cta",
-      "props": {
-        "title": "Ready to Transform Your Data Infrastructure?",
-        "subtitle": "Join hundreds of companies scaling with TiDB. Start free today—no credit card required.",
-        "image": {
-          "image": {
-            "url": "https://static.pingcap.com/images/f2890cff-cta-cube-violet-mini.svg"
+      id: 'cta',
+      type: 'cta',
+      props: {
+        title: 'Ready to Transform Your Data Infrastructure?',
+        subtitle:
+          'Join hundreds of companies scaling with TiDB. Start free today—no credit card required.',
+        image: {
+          image: {
+            url: 'https://static.pingcap.com/images/f2890cff-cta-cube-violet-mini.svg',
           },
-          "alt": "",
-          "width": 278,
-          "height": 256
+          alt: '',
+          width: 278,
+          height: 256,
         },
-        "primaryCta": {
-          "text": "Start Free Trial",
-          "href": "https://tidbcloud.com/free-trial/"
+        primaryCta: {
+          text: 'Start Free Trial',
+          href: 'https://tidbcloud.com/free-trial/',
         },
-        "secondaryCta": {
-          "text": "Schedule a Demo",
-          "href": "https://pingcap.com/contact/"
-        }
+        secondaryCta: {
+          text: 'Schedule a Demo',
+          href: 'https://pingcap.com/contact/',
+        },
       },
-      "style": {
-        "background": "brand-violet",
-        "spacing": "section"
-      }
-    }
-  ]
+      style: {
+        background: 'brand-violet',
+        spacing: 'section',
+      },
+    },
+  ],
 }
 
 export default function GeneratedPage() {

@@ -5,13 +5,15 @@ import { PageRenderer } from '@/lib/page-renderer'
 import type { PageDSL } from '@/lib/dsl-schema'
 
 export const metadata: Metadata = {
-  title: "listicle",
-  description: "Discover the top 5 key differences between TiDB and MySQL that every developer should understand for better database decisions.",
+  title: 'listicle',
+  description:
+    'Discover the top 5 key differences between TiDB and MySQL that every developer should understand for better database decisions.',
   robots: { index: true, follow: true },
   alternates: { canonical: 'https://www.pingcap.com/listicle/' },
   openGraph: {
-    title: "listicle",
-    description: "Discover the top 5 key differences between TiDB and MySQL that every developer should understand for better database decisions.",
+    title: 'listicle',
+    description:
+      'Discover the top 5 key differences between TiDB and MySQL that every developer should understand for better database decisions.',
     url: 'https://www.pingcap.com/listicle/',
     siteName: 'TiDB',
     images: [
@@ -31,53 +33,55 @@ export const metadata: Metadata = {
 }
 
 const schema = buildPageSchema({
-  path: "/listicle/",
-  title: "listicle",
-  description: "Discover the top 5 key differences between TiDB and MySQL that every developer should understand for better database decisions.",
+  path: '/listicle/',
+  title: 'listicle',
+  description:
+    'Discover the top 5 key differences between TiDB and MySQL that every developer should understand for better database decisions.',
   breadcrumbs: [
     { name: 'Home', path: '/' },
-    { name: "listicle", path: "/listicle/" },
+    { name: 'listicle', path: '/listicle/' },
   ],
 })
 
 const dsl: PageDSL = {
-  "pageName": "Listicle hub",
-  "meta": {
-    "title": "listicle",
-    "description": "Discover the top 5 key differences between TiDB and MySQL that every developer should understand for better database decisions.",
-    "canonical": "/listicle/"
+  pageName: 'Listicle hub',
+  meta: {
+    title: 'listicle',
+    description:
+      'Discover the top 5 key differences between TiDB and MySQL that every developer should understand for better database decisions.',
+    canonical: '/listicle/',
   },
-  "sections": [
+  sections: [
     {
-      "id": "hero",
-      "type": "hero",
-      "props": {
-        "layout": "centered",
-        "eyebrow": "",
-        "headline": "listicle",
-        "subheadline": "",
-        "primaryCta": {
-          "text": "",
-          "href": ""
+      id: 'hero',
+      type: 'hero',
+      props: {
+        layout: 'centered',
+        eyebrow: '',
+        headline: 'listicle',
+        subheadline: '',
+        primaryCta: {
+          text: '',
+          href: '',
         },
-        "secondaryCta": {
-          "text": "",
-          "href": ""
+        secondaryCta: {
+          text: '',
+          href: '',
         },
-        "heroImage": {
-          "image": {
-            "url": "https://static.pingcap.com/images/f54533cc-1000011158.svg"
+        heroImage: {
+          image: {
+            url: 'https://static.pingcap.com/images/f54533cc-1000011158.svg',
           },
-          "alt": "hero image",
-          "width": 500,
-          "height": 400
-        }
+          alt: 'hero image',
+          width: 500,
+          height: 400,
+        },
       },
-      "style": {
-        "spacing": "hero"
-      }
-    }
-  ]
+      style: {
+        spacing: 'hero',
+      },
+    },
+  ],
 }
 
 export default function GeneratedPage() {
