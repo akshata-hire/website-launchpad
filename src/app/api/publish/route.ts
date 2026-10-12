@@ -4,6 +4,7 @@ import { dslToTsx } from '@/lib/dsl-to-tsx'
 import { SITE_BASE_URL } from '@/lib/env'
 import { logAudit, resolveActor } from '@/lib/audit'
 import { stampAuthorship } from '@/lib/authorship'
+import { getGitHubAuthHeaders } from '@/lib/github-auth'
 import type { PageDSL } from '@/lib/dsl-schema'
 
 interface PublishRequest {
@@ -46,7 +47,7 @@ function isValidBranchName(branch: string) {
 }
 
 export async function POST(request: NextRequest) {
-  const { GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, VERCEL_OWNER } = process.env
+  const { GITHUB_OWNER, GITHUB_REPO, VERCEL_OWNER } = process.env
   const mainPublishToken = process.env.PUBLISH_MAIN_TOKEN
   if (process.env.MOCK_PUBLISH_SUCCESS === '1') {
     const body = (await request.json().catch(() => ({}))) as PublishRequest
@@ -61,7 +62,7 @@ export async function POST(request: NextRequest) {
       deployUrl: mockDeployUrl,
     })
   }
-  if (!GITHUB_TOKEN || !GITHUB_OWNER || !GITHUB_REPO || !VERCEL_OWNER) {
+  if (!GITHUB_OWNER || !GITHUB_REPO || !VERCEL_OWNER) {
     return NextResponse.json({ error: 'Environment variables not configured' }, { status: 500 })
   }
 
@@ -120,11 +121,9 @@ export async function POST(request: NextRequest) {
   const actor = await resolveActor()
   stampAuthorship(dsl, actor)
 
-  const headers = {
-    Authorization: `Bearer ${GITHUB_TOKEN}`,
-    Accept: 'application/vnd.github+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-    'Content-Type': 'application/json',
+  const headers = await getGitHubAuthHeaders()
+  if (!headers) {
+    return NextResponse.json({ error: 'Environment variables not configured' }, { status: 500 })
   }
   const baseUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}`
 

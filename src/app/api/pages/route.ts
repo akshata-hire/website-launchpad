@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { getGitHubAuthHeaders } from '@/lib/github-auth'
 
 export interface PageListItem {
   slug: string
@@ -25,15 +26,6 @@ function toTitleCase(input: string) {
     .filter(Boolean)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ')
-}
-
-function getGitHubHeaders() {
-  const { GITHUB_TOKEN } = process.env
-  return {
-    Authorization: `Bearer ${GITHUB_TOKEN}`,
-    Accept: 'application/vnd.github+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-  }
 }
 
 function isPublicRoutePath(routePath: string) {
@@ -150,10 +142,11 @@ const cacheKey = (params: URLSearchParams) => `pages:${params.toString() || 'def
  * and code-only pages (page.tsx/page.jsx/page.mdx).
  */
 export async function GET(req: Request) {
-  const { GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO } = process.env
+  const { GITHUB_OWNER, GITHUB_REPO } = process.env
   const branch = process.env.GITHUB_BRANCH ?? 'staging'
 
-  if (!GITHUB_TOKEN || !GITHUB_OWNER || !GITHUB_REPO) {
+  const headers = await getGitHubAuthHeaders()
+  if (!headers || !GITHUB_OWNER || !GITHUB_REPO) {
     return NextResponse.json({ error: 'GitHub env vars not configured' }, { status: 500 })
   }
 
@@ -173,7 +166,6 @@ export async function GET(req: Request) {
   const includeTitle = url.searchParams.get('includeTitle') !== '0'
   const includeUpdated = url.searchParams.get('includeUpdated') !== '0'
 
-  const headers = getGitHubHeaders()
   const baseUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}`
 
   let mainTree: { tree: { path: string; type: string }[] } | null = null
