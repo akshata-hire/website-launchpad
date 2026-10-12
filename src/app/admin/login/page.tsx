@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { signIn } from '@/auth'
 
 export const metadata: Metadata = {
-  title: 'Sign In · TiDB Admin',
+  title: 'Sign in · TiDB Admin',
   robots: { index: false, follow: false },
 }
 
