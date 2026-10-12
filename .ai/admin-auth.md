@@ -6,17 +6,25 @@ sign-in, restricted to the `pingcap.com` email domain. Implemented with
 
 ## Gate behaviour (see `src/middleware.ts`)
 
-| Environment        | `VERCEL_ENV` | Behaviour                                             |
-| ------------------ | ------------ | ----------------------------------------------------- |
-| Production         | `production` | `/admin` + `/api` return **404** (unchanged)          |
-| Preview / staging  | `preview`    | **Require** a signed-in `@pingcap.com` Google user    |
-| Local (`pnpm dev`) | _unset_      | **No** login gate — localhost is not internet-exposed |
+| Environment                | Condition                                       | Behaviour                                             |
+| -------------------------- | ----------------------------------------------- | ----------------------------------------------------- |
+| Production                 | `VERCEL_ENV === 'production'`                   | `/admin` + `/api` return **404** (unchanged)          |
+| Preview — non-`staging`    | `VERCEL_ENV === 'preview'`, git ref ≠ `staging` | **404** — admin is hidden on per-PR previews          |
+| Preview — `staging` branch | `VERCEL_ENV === 'preview'`, git ref = `staging` | **Require** a signed-in `@pingcap.com` Google user    |
+| Local (`pnpm dev`)         | `VERCEL_ENV` unset                              | **No** login gate — localhost is not internet-exposed |
+
+So the admin only ever appears on the single **staging** deployment, and that
+deployment requires login. The staging URL is public and predictable, so the
+login — not the obscurity of the URL — is what actually protects it.
+
+Staging detection uses `VERCEL_GIT_COMMIT_REF` (the deployed branch), since
+`VERCEL_ENV` is `preview` for every branch preview and can't distinguish them.
 
 Domain enforcement is in the `signIn` callback in `src/auth.ts`: a login is
 accepted only when Google reports `email_verified` **and** the email ends in
 `@pingcap.com`. The Google `hd` param is only a UI hint and is not trusted.
 
-Unauthenticated requests on preview: browser navigations are redirected to
+Unauthenticated requests on staging: browser navigations are redirected to
 `/api/auth/signin`; API calls get `401`.
 
 ## Required environment variables
