@@ -28,9 +28,7 @@
           "region": "na1"
         }
       },
-      "style": {
-        "spacing": "hero"
-      }
+      "style": { "spacing": "hero" }
     },
     {
       "id": "benefits",
@@ -74,9 +72,7 @@
         "columns": 3,
         "borderStyle": "color"
       },
-      "style": {
-        "spacing": "section"
-      }
+      "style": { "spacing": "section" }
     },
     {
       "id": "highlights",
@@ -119,9 +115,7 @@
         ],
         "columns": 3
       },
-      "style": {
-        "spacing": "section"
-      }
+      "style": { "spacing": "section" }
     },
     {
       "id": "testimonials",
@@ -165,9 +159,7 @@
           }
         ]
       },
-      "style": {
-        "spacing": "section"
-      }
+      "style": { "spacing": "section" }
     },
     {
       "id": "requirements",
@@ -201,9 +193,7 @@
         "columns": 4,
         "itemLayout": "vertical"
       },
-      "style": {
-        "spacing": "section"
-      }
+      "style": { "spacing": "section" }
     },
     {
       "id": "faq",
@@ -237,9 +227,7 @@
           }
         ]
       },
-      "style": {
-        "spacing": "section"
-      }
+      "style": { "spacing": "section" }
     },
     {
       "id": "cta-final",
@@ -264,10 +252,7 @@
           "href": "https://www.pingcap.com/demo/"
         }
       },
-      "style": {
-        "background": "brand-violet",
-        "spacing": "section"
-      }
+      "style": { "background": "brand-violet", "spacing": "section" }
     }
   ]
 }
