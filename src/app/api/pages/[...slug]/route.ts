@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { logAudit } from '@/lib/audit'
+import { logAudit, resolveActor } from '@/lib/audit'
+import { stampAuthorship } from '@/lib/authorship'
 import type { PageDSL } from '@/lib/dsl-schema'
 
 const SKIP_SLUGS = new Set(['api', 'admin', 'sections'])
@@ -94,16 +95,34 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
   const baseUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}`
   const headers = getGitHubHeaders()
 
-  // Check for existing SHA (upsert)
+  // Check for existing SHA (upsert). The contents response also carries the prior
+  // file, so we read the previous creator from it and carry it forward — the
+  // original creator survives even if this payload dropped the field.
   let sha: string | undefined
+  let priorCreatedBy: string | undefined
+  let priorCreatedAt: string | undefined
   const check = await fetch(
     `${baseUrl}/contents/${dslPath}?ref=${encodeURIComponent(writeBranch)}`,
     { headers }
   )
   if (check.ok) {
-    const existing = (await check.json()) as { sha: string }
+    const existing = (await check.json()) as { sha: string; content?: string }
     sha = existing.sha
+    if (existing.content) {
+      try {
+        const prior = JSON.parse(
+          Buffer.from(existing.content, 'base64').toString('utf-8')
+        ) as PageDSL
+        priorCreatedBy = prior?.meta?.createdBy
+        priorCreatedAt = prior?.meta?.createdAt
+      } catch {
+        // Unparseable prior DSL — fall back to stamping a fresh creator.
+      }
+    }
   }
+
+  const actor = await resolveActor()
+  stampAuthorship(dsl, actor, { priorCreatedBy, priorCreatedAt })
 
   const putBody: Record<string, unknown> = {
     message: `chore: update DSL draft for /${slug}/`,

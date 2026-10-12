@@ -27,7 +27,11 @@ export interface AuditEntry {
   detail?: string
 }
 
-async function resolveActor(): Promise<string> {
+/**
+ * The current actor's identity for audit/authorship: the signed-in Google email,
+ * or `local-dev` when login is bypassed locally, or `unknown` if unresolved.
+ */
+export async function resolveActor(): Promise<string> {
   try {
     const session = await auth()
     const email = session?.user?.email
