@@ -42,7 +42,7 @@ const schema = buildPageSchema({
   breadcrumbs: [
     { name: "Home", path: "/" },
     {
-      name: 'Launch Fast. Scale without Limits. Get <span class="text-gradient-violet">$100,000</span> in TiDB Cloud Credits.',
+      name: '[test]Launch Fast. Scale without Limits. Get <span class="text-gradient-violet">$100,000</span> in TiDB Cloud Credits.',
       path: "/startup-program-test/",
     },
   ],
@@ -64,7 +64,7 @@ const dsl: PageDSL = {
         layout: "split",
         eyebrow: "Startup Program",
         headline:
-          'Launch Fast. Scale without Limits. Get <span class="text-gradient-violet">$100,000</span> in TiDB Cloud Credits.',
+          '[test]Launch Fast. Scale without Limits. Get <span class="text-gradient-violet">$100,000</span> in TiDB Cloud Credits.',
         subheadline:
           "Apply now and start building with the distributed SQL database that grows with you—from MVP to millions of users.",
         heroImage: {
