@@ -209,15 +209,15 @@ const dsl: PageDSL = {
           },
           {
             q: 'What Data Can I Bring into TiDB Cloud Lake?',
-            a: 'Synchronize MySQL or PostgreSQL data with snapshot and change data capture (CDC) tasks. Load CSV, Parquet or NDJSON files from Amazon S3 through one-time or continuous ingestion.  Explore integration options - https://docs.pingcap.com/tidbcloudlake/data-integration-overview/',
+            a: 'Synchronize MySQL or PostgreSQL data with snapshot and change data capture (CDC) tasks. Load CSV, Parquet or NDJSON files from Amazon S3 through one-time or continuous ingestion.  [Explore integration options](https://docs.pingcap.com/tidbcloudlake/data-integration-overview/)',
           },
           {
             q: 'How Is TiDB Cloud Lake Priced?',
-            a: 'Pricing covers warehouse compute, storage, cloud service/API usage and applicable Data Integration hosting. Suspending a warehouse stops its compute charges; storage and other applicable charges continue. View pricing - https://www.pingcap.com/pricing/',
+            a: 'Pricing covers warehouse compute, storage, cloud service/API usage and applicable Data Integration hosting. Suspending a warehouse stops its compute charges; storage and other applicable charges continue. [View pricing](https://www.pingcap.com/pricing/)',
           },
           {
             q: 'Is TiDB Cloud Lake Available Now?',
-            a: 'TiDB Cloud Lake is in Public Preview. Sign in to TiDB Cloud, open My Lake and initialize the service. Follow the Quick Start to create a warehouse and run your first query. Read the Quickstart Guide  - https://docs.pingcap.com/tidbcloudlake/lake-quick-start/',
+            a: 'TiDB Cloud Lake is in Public Preview. Sign in to TiDB Cloud, open My Lake and initialize the service. Follow the Quick Start to create a warehouse and run your first query. [Read the Quickstart Guide](https://docs.pingcap.com/tidbcloudlake/lake-quick-start/)',
           },
         ],
       },
