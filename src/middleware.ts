@@ -1,36 +1,24 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, type NextRequest, type NextFetchEvent } from 'next/server'
 import { auth } from '@/auth'
 
 /**
  * Gates the admin surface (`/admin/*`) and its API routes (`/api/*`).
  *
- * - Production: fully disabled (404), unchanged from before.
+ * - Production: fully disabled (404). Auth.js is never invoked here, so a missing
+ *   AUTH_SECRET in production can't surface as a 500 on these paths.
  * - Any deployed branch other than `staging` (per-PR previews, etc.): also 404,
- *   so the admin only ever appears on the single staging deployment — shrinking
- *   the exposed surface to one known host.
- * - Local development: no login gate. localhost is not internet-exposed, so this
- *   keeps the dev loop friction-free.
+ *   so the admin only ever appears on the single staging deployment.
+ * - Local development: no login gate (localhost is not internet-exposed). Auth.js
+ *   is not invoked either, keeping the dev loop friction-free.
  * - Staging preview: requires a signed-in Google user on the @pingcap.com domain
- *   (domain enforcement lives in the `signIn` callback in `@/auth`). The staging
- *   URL is public, so login — not obscurity — is what actually protects it.
+ *   (enforced by the `signIn` callback in `@/auth`). The staging URL is public, so
+ *   login — not obscurity — is what protects it.
  */
-export default auth((req) => {
+
+// The authenticated gate for staging. Wrapping with `auth()` resolves the session
+// into `req.auth`, so this runs ONLY for staging (see the dispatcher below).
+const stagingGate = auth((req) => {
   const { pathname } = req.nextUrl
-  const vercelEnv = process.env.VERCEL_ENV
-
-  if (vercelEnv === 'production') {
-    return new NextResponse(null, { status: 404 })
-  }
-
-  if (!vercelEnv) {
-    return NextResponse.next()
-  }
-
-  // Deployed but not the staging branch (VERCEL_ENV is 'preview' for every branch
-  // preview, so distinguish by the deployed git ref). Hide admin on those too.
-  if (process.env.VERCEL_GIT_COMMIT_REF !== 'staging') {
-    return new NextResponse(null, { status: 404 })
-  }
 
   // Auth.js endpoints must stay reachable so the sign-in round-trip can complete.
   if (pathname.startsWith('/api/auth')) {
@@ -59,6 +47,31 @@ export default auth((req) => {
   signInUrl.searchParams.set('callbackUrl', req.nextUrl.href)
   return NextResponse.redirect(signInUrl)
 })
+
+export default function middleware(req: NextRequest, ev: NextFetchEvent) {
+  const vercelEnv = process.env.VERCEL_ENV
+
+  // Production: admin fully disabled. Return before touching Auth.js.
+  if (vercelEnv === 'production') {
+    return new NextResponse(null, { status: 404 })
+  }
+
+  // Local development: not internet-exposed, no gate. Also before Auth.js.
+  if (!vercelEnv) {
+    return NextResponse.next()
+  }
+
+  // Deployed but not the staging branch (VERCEL_ENV is 'preview' for every branch
+  // preview, so distinguish by the deployed git ref). Hide admin on those too.
+  if (process.env.VERCEL_GIT_COMMIT_REF !== 'staging') {
+    return new NextResponse(null, { status: 404 })
+  }
+
+  // Staging only: run the authenticated gate (this is where Auth.js runs).
+  // `auth()`'s result is typed for route-handler context, but at runtime Next
+  // passes a NextFetchEvent (both carry `waitUntil`); cast to its param type.
+  return stagingGate(req, ev as unknown as Parameters<typeof stagingGate>[1])
+}
 
 export const config = {
   matcher: ['/admin/:path*', '/api/:path*'],
