@@ -88,12 +88,6 @@ const dsl: PageDSL = {
             width: 1036,
             height: 992,
           },
-          reducedMotionImage: {
-            url: 'https://static.pingcap.com/images/4e779190-02-cloud-lake-hero-flat-motion-10s.mp4',
-            alt: '02 cloud lake hero flat motion 10s',
-            width: 1036,
-            height: 992,
-          },
           alt: '02 cloud lake hero flat motion 10s',
           width: 1036,
           height: 992,

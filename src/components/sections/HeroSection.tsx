@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { cn } from '@/lib/utils'
+import { cn, isVideoUrl } from '@/lib/utils'
 import { PrimaryButton } from '@/components/ui/PrimaryButton'
 import { SecondaryButton } from '@/components/ui/SecondaryButton'
 import type { ImageRef, HeroProps } from '@/lib/dsl-schema'
@@ -68,17 +68,36 @@ interface HeroSectionProps {
 }
 
 function HeroVisual({ heroImage, decorative }: { heroImage: HeroImageSlot; decorative: boolean }) {
+  const sizeClass = cn(
+    'max-w-full h-auto',
+    decorative && 'w-[88vw] max-w-[360px] md:w-[54vw] md:max-w-[430px] lg:w-[36vw] lg:max-w-[520px]'
+  )
+
+  // A video URL dropped into the hero image field (upload or media library)
+  // renders as an autoplaying, looping, muted video — mirrors ColumnsSection.
+  if (isVideoUrl(heroImage.image.url)) {
+    return (
+      <video
+        src={heroImage.image.url}
+        aria-label={heroImage.alt || undefined}
+        width={heroImage.width || 800}
+        height={heroImage.height || 500}
+        autoPlay
+        loop
+        muted
+        playsInline
+        className={sizeClass}
+      />
+    )
+  }
+
   const image = (
     <Image
       src={heroImage.image.url}
       alt={heroImage.alt ?? ''}
       width={heroImage.width || 800}
       height={heroImage.height || 500}
-      className={cn(
-        'max-w-full h-auto',
-        decorative &&
-          'w-[88vw] max-w-[360px] md:w-[54vw] md:max-w-[430px] lg:w-[36vw] lg:max-w-[520px]'
-      )}
+      className={sizeClass}
       sizes={decorative ? '(min-width: 1024px) 36vw, (min-width: 768px) 54vw, 88vw' : undefined}
       priority={heroImage.priority ?? true}
     />
