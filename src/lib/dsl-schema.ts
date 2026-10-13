@@ -20,6 +20,13 @@ export interface PageMeta {
   header?: 'full' | 'lp'
   // Optional CTA shown on the right of the 'lp' header. Ignored for 'full'.
   headerCta?: Cta
+  // Authorship — stamped server-side on every write (publish / draft-save / copy).
+  // `createdBy`/`createdAt` are set once and preserved; `modifiedBy`/`modifiedAt`
+  // update on each write. Values are the signed-in Google email (or `local-dev`).
+  createdBy?: string
+  createdAt?: string
+  modifiedBy?: string
+  modifiedAt?: string
 }
 
 export interface Cta {
